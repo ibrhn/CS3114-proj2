@@ -32,10 +32,13 @@ public class HandleTest
         handle.set(2);
         assertEquals(2, handle.get());
 
-        assertFalse(handle.equals(new Object()));
-        assertFalse(handle == null);
-        assertFalse(handle.equals(new Handle(0)));
+        Handle comp = new Handle(5);
+        assertEquals(-1, handle.compareTo(comp));
+        assertEquals(1, comp.compareTo(handle));
 
-        assertTrue(handle.equals(new Handle(2)));
+        comp.set(2);
+        assertEquals(0, handle.compareTo(comp));
+
+        assertEquals("2", handle.toString());
     }
 }

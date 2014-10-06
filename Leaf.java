@@ -10,7 +10,7 @@
 public class Leaf
     extends TreeNode
 {
-    private Leaf   next;
+    private Leaf next;
 
 
     // -------------------------------------------------------------------------

@@ -52,4 +52,12 @@ public class Handle implements Comparable<Handle>
     {
         return Integer.signum(num - h.get());
     }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public String toString()
+    {
+        return String.valueOf(num);
+    }
 }

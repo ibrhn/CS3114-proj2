@@ -23,8 +23,8 @@ public class KVPair
      */
     public KVPair(Handle key, Handle value)
     {
-        this.key = key;
-        this.value = value;
+        setKey(key);
+        setValue(value);
     }
 
 
@@ -103,9 +103,7 @@ public class KVPair
      */
     public KVPair set(KVPair pair)
     {
-        setKey(pair.key());
-        setValue(pair.value());
-        return this;
+        return set(pair.key(), pair.value());
     }
 
 
@@ -121,5 +119,22 @@ public class KVPair
         setKey(key);
         setValue(value);
         return this;
+    }
+
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        return (obj instanceof KVPair)
+            && key.get() == ((KVPair)obj).key().get()
+                && value.get() == ((KVPair)obj).value().get();
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public String toString()
+    {
+        return key.toString() + " " + value.toString();
     }
 }

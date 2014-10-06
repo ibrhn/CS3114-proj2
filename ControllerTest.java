@@ -8,7 +8,7 @@
 public class ControllerTest
     extends student.TestCase
 {
-    private Memman mm;
+    private SearchTree mm;
 
 
     // ----------------------------------------------------------
@@ -17,7 +17,7 @@ public class ControllerTest
      */
     public void setUp()
     {
-        mm = new Memman();
+        mm = new SearchTree();
     }
 
 

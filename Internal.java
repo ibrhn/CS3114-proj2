@@ -32,18 +32,6 @@ public class Internal
 
     // -------------------------------------------------------------------------
     /**
-     * Initializes the Internal TreeNode by setting the left and right KVPairs.
-     * @param left left KVPair
-     * @param right right KVPair
-     */
-    public Internal(KVPair left, KVPair right)
-    {
-        super(left, right);
-    }
-
-
-    // -------------------------------------------------------------------------
-    /**
      * @return the low TreeNode
      */
     public TreeNode low()
@@ -107,7 +95,7 @@ public class Internal
 
     // -------------------------------------------------------------------------
     /**
-     * Sets the mid TreeNode.
+     * Sets the mid TreeNode and the corresponding left KVPair.
      * @param mid new mid TreeNode
      */
     public void setMid(TreeNode mid)
@@ -118,7 +106,7 @@ public class Internal
 
     // -------------------------------------------------------------------------
     /**
-     * Sets the high TreeNode.
+     * Sets the high TreeNode and the corresponding right KVPair.
      * @param high new high TreeNode
      */
     public void setHigh(TreeNode high)

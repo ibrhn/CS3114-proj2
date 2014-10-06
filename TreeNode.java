@@ -30,7 +30,7 @@ public class TreeNode
      */
     public TreeNode(KVPair left, KVPair right)
     {
-        set(left, right);
+        compSet(left, right);
     }
 
 
@@ -60,10 +60,19 @@ public class TreeNode
      * @param right the new right KVPair
      * @return this
      */
-    public TreeNode set(KVPair left, KVPair right)
+    @SuppressWarnings("hiding")
+    public TreeNode compSet(KVPair left, KVPair right)
     {
-        setLeft((left.compareTo(right) <= 0) ? left : right);
-        setRight((right.compareTo(left) >= 0) ? right : left);
+        if (right == null)
+        {
+            setLeft(left);
+            setRight(right);
+        }
+        else
+        {
+            setLeft((left.compareTo(right) <= 0) ? left : right);
+            setRight((left.compareTo(right) <= 0) ? right : left);
+        }
         return this;
     }
 
@@ -74,7 +83,7 @@ public class TreeNode
      */
     public void setLeft(KVPair left)
     {
-        this.left.set(left);
+        this.left = left;
     }
 
 
@@ -84,7 +93,7 @@ public class TreeNode
      */
     public void setRight(KVPair right)
     {
-        this.right.set(right);
+        this.right = right;
     }
 
 
@@ -96,5 +105,26 @@ public class TreeNode
     public boolean contains(KVPair pair)
     {
         return (left == pair) || (right == pair);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @param pair KVPair to compare to
+     * @return if this contains something equivalent to pair, but not pair
+     */
+    public boolean containsEqual(KVPair pair)
+    {
+        return ((left != null) ? left.equals(pair) : (pair == null))
+            || ((right != null) ? right.equals(pair) : (pair == null));
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public String toString()
+    {
+        return ((left != null) ? left.toString() : "")
+            + ((right != null) ? " " + right.toString() : "");
     }
 }
