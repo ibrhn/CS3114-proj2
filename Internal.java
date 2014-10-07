@@ -95,7 +95,7 @@ public class Internal
 
     // -------------------------------------------------------------------------
     /**
-     * Sets the mid TreeNode and the corresponding left KVPair.
+     * Sets the mid TreeNode.
      * @param mid new mid TreeNode
      */
     public void setMid(TreeNode mid)
@@ -106,7 +106,7 @@ public class Internal
 
     // -------------------------------------------------------------------------
     /**
-     * Sets the high TreeNode and the corresponding right KVPair.
+     * Sets the high TreeNode.
      * @param high new high TreeNode
      */
     public void setHigh(TreeNode high)

@@ -92,18 +92,37 @@ public class Two3PlusTreeTest extends student.TestCase
             + "    1 27 1 28\n"
             + "    1 32 1 40", tree.print());
 
-        tree.insert(new Handle(1), new Handle(48));
+        tree.insert(new Handle(1), new Handle(12));
         assertEquals("Printing 2-3 tree:\n"
-            + "1 24 1 32\n"
-            + "  1 5 1 16\n"
+            + "1 8 1 24\n"
+            + "  1 5\n"
             + "    1 4\n"
-            + "    1 5 1 8\n"
+            + "    1 5\n"
+            + "  1 16\n"
+            + "    1 8 1 12\n"
             + "    1 16\n"
-            + "  1 27\n"
+            + "  1 27 1 32\n"
             + "    1 24\n"
             + "    1 27 1 28\n"
-            + "  1 40\n"
+            + "    1 32 1 40", tree.print());
+
+        tree.insert(new Handle(1), new Handle(25));
+        tree.insert(new Handle(1), new Handle(26));
+        assertEquals("Printing 2-3 tree:\n"
+            + "1 24\n"
+            + "  1 8\n"
+            + "    1 5\n"
+            + "      1 4\n"
+            + "      1 5\n"
+            + "    1 16\n"
+            + "      1 8 1 12\n"
+            + "      1 16\n"
+            + "  1 27\n"
+            + "    1 25\n"
+            + "      1 24\n"
+            + "      1 25 1 26\n"
             + "    1 32\n"
-            + "    1 40 1 48", tree.print());
+            + "      1 27 1 28\n"
+            + "      1 32 1 40", tree.print());
     }
 }
