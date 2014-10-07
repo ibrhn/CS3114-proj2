@@ -252,4 +252,90 @@ public class Two3PlusTree
         }
         return traversal;
     }
+
+    /**
+     * removes the key value pair from the tree
+     *
+     * @param key
+     *            the key we're trying to remove
+     * @param value
+     *            the value we're trying to remove
+     * @return true if the value was successfully removed false otherwise
+     */
+    public boolean remove(Handle key, Handle value)
+    {
+        KVPair insert = (prTrash.size() != 0) ? prTrash.get().set(key, value) : new KVPair(key, value);
+        return recRemove(root, insert);
+
+    }
+
+
+    /**
+     * recursive remove method
+     */
+    private boolean recRemove(TreeNode current, KVPair insert)
+    {
+
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * finds the key and value in the tree
+     * @param root
+     * @param key
+     * @param value
+     * @return true if found
+     *         false if not found
+     */
+    public boolean find(Handle key, Handle value) {
+
+        KVPair searchVal = (prTrash.size() != 0) ? prTrash.get().set(key, value) : new KVPair(key, value);
+        return (search(root, searchVal) != null);
+    }
+
+
+    private Leaf search(TreeNode current, KVPair pair)
+    {
+        if (size == 0) {
+            return null;
+        }
+        else if (current instanceof Internal) {
+            //the key or value we are looking for is less than our current left
+            //value so we want to move to the low node and search i.e: we're looking
+            //for 5 5 and our left kvpair had 5 5 or anything greater than that
+            if (pair.compareTo(current.left()) <= 0) {
+                return search(((Internal)current).low(), pair);
+            }
+            //the key or value we are looking for is greater than our current value
+            //so we want to check the right kvpair in our node to see if we want to
+            //move to either mid or high.
+            else if (pair.compareTo(current.left()) > 0) {
+                //we want to move to high because our searchVal returned 1 i.e:
+                //if we were looking for 26 26 our kvpair had 25 25 then we would
+                //move down the high path
+                if (pair.compareTo(current.right()) == 1) {
+
+                    return search(((Internal)current).high(), pair);
+                }
+                //we want to move to mid because our searchval returned less than
+                //or equal to. i.e: if we were looking for 25 and our kvpair had
+                //25 25 then compareTo would return 0 or -1 so we want to move to mid
+                else {
+                    return search(((Internal)current).mid(), pair);
+                }
+            }
+        }
+        else  if (current instanceof Leaf) {
+
+            if (current.right().compareTo(pair) == 0 || current.right().compareTo(pair) == 0) {
+                return (Leaf)current;
+            }
+            else {
+                return null;
+            }
+        }
+        return null;
+    }
 }
