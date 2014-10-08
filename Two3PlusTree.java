@@ -35,8 +35,11 @@ public class Two3PlusTree
     /**
      * Calls the helper method recInsert with this.root as the starting point,
      * to insert a KVPair with the corresponding key and value
-     * @param key key for KVPair to be inserted
-     * @param value value for KVPair to be inserted
+     *
+     * @param key
+     *            key for KVPair to be inserted
+     * @param value
+     *            value for KVPair to be inserted
      * @return if a KVPair corresponding to key and value was inserted
      *         successfully (if there are no duplicates)
      */
@@ -46,18 +49,22 @@ public class Two3PlusTree
     }
 
 
- // ----------------------------------------------------------
+    // ----------------------------------------------------------
     /**
      * Calls the helper method recRemove with this.root as the starting point,
      * to remove a KVPair with the corresponding key and value
-     * @param key key of KVPair to be removed
-     * @param value value of KVPair to be removed
+     *
+     * @param key
+     *            key of KVPair to be removed
+     * @param value
+     *            value of KVPair to be removed
      * @return if a KVPair corresponding to key and value was removed
      *         successfully (if a corresponding KVPair is in the tree)
      */
     public boolean remove(Handle key, Handle value)
     {
-        return recRemove(this.root, key, value);
+        KVPair pair = new KVPair(key, value);
+        return recRemove(this.root, pair);
     }
 
 
@@ -81,37 +88,47 @@ public class Two3PlusTree
     }
 
 
-    private KVPair search(Handle key)
+    public Leaf search(Handle key)
     {
-        return find(this.root, key);
+        return search(root, key);
     }
 
 
     @SuppressWarnings("hiding")
-    private KVPair find(TreeNode root, Handle key)
+    private Leaf search(TreeNode root, Handle key)
     {
         if (size != 0)
         {
             if (root instanceof Internal)
             {
                 // if key is less than root.left().key()
-                if (key.compareTo(root.left().key()) == -1)
-                    return find(((Internal)root).low(), key);
+                if (key.compareTo(root.left().key()) <= 0)
+                    return search(((Internal)root).low(), key);
                 // if key is greater than or equal to root.left().key(), and
                 // either root.right() is null or key is less than
                 // root.right().key()
                 else if (root.right() == null
                     || key.compareTo(root.right().key()) == -1)
-                        return find(((Internal)root).mid(), key);
+                    return search(((Internal)root).mid(), key);
                 // if key is greater than or equal to root.right().key()
                 else
-                    return find(((Internal)root).high(), key);
+                    return search(((Internal)root).high(), key);
             }
             else if (root instanceof Leaf)
-                if (root.left().key().equals(key))
-                    return root.left();
-                else if (root.right() != null && root.right().key().equals(key))
-                    return root.right();
+
+                if ((root.left().key()).equals(key)
+                    || (root.right() != null && root.right().key().equals(key)))
+                    return (Leaf)root;
+                else if (((Leaf)root).next() != null)
+                {
+                    root = ((Leaf)root).next();
+                    if ((root.left().key()).equals(key)
+                        || (root.right() != null && root.right().key()
+                            .equals(key)))
+                    {
+                        return (Leaf)root;
+                    }
+                }
         }
         return null;
     }
@@ -120,14 +137,15 @@ public class Two3PlusTree
     @SuppressWarnings("hiding")
     private boolean recInsert(TreeNode root, Handle key, Handle value)
     {
-        KVPair pair = (prTrash.size() != 0)
-            ? prTrash.remove(prTrash.size() - 1).set(key, value)
-                : new KVPair(key, value);
+        KVPair pair =
+            (!prTrash.isEmpty()) ? prTrash.remove(prTrash.size() - 1).set(
+                key,
+                value) : new KVPair(key, value);
 
         if (size == 0)
-            this.root = ((lfTrash.size() != 0)
-                ? lfTrash.remove(lfTrash.size() - 1).compSet(pair, null)
-                    : new Leaf(pair));
+            this.root =
+                ((lfTrash.size() != 0) ? lfTrash.remove(lfTrash.size() - 1)
+                    .compSet(pair, null) : new Leaf(pair));
 
         // if root contains a KVPair equal to pair, that means there is a
         // duplicate, and the method returns false
@@ -145,7 +163,7 @@ public class Two3PlusTree
                 {
                     if (((Internal)root).right() == null
                         || pair.compareTo(((Internal)root).right()) == -1)
-                            recInsert(((Internal)root).mid(), key, value);
+                        recInsert(((Internal)root).mid(), key, value);
                     else
                         recInsert(((Internal)root).high(), key, value);
                 }
@@ -167,16 +185,20 @@ public class Two3PlusTree
                     // the split Leaf will acquire root.right() by default, and
                     // it must also acquire the maximum of pair and root.left(),
                     // and the minimum will be in root
-                    KVPair move = (root.left().compareTo(pair) == 1)
-                        ? root.left() : pair;
+                    KVPair move =
+                        (root.left().compareTo(pair) == 1) ? root.left() : pair;
 
-                    Leaf split = ((lfTrash.size() != 0)
-                        ? (Leaf)lfTrash.remove(lfTrash.size() - 1).compSet(move,
-                            root.right()) : new Leaf(move, root.right()));
+                    Leaf split =
+                        ((lfTrash.size() != 0)
+                            ? (Leaf)lfTrash.remove(lfTrash.size() - 1).compSet(
+                                move,
+                                root.right())
+                            : new Leaf(move, root.right()));
 
                     // root.left() is set to the minimum of root.left() and pair
                     root.compSet(((root.left().compareTo(pair) == 1)
-                        ? pair : root.left()), null);
+                        ? pair
+                        : root.left()), null);
 
                     // Leaf pointers are updated
                     split.setNext(((Leaf)root).next());
@@ -194,22 +216,61 @@ public class Two3PlusTree
 
 
     @SuppressWarnings("hiding")
-    private boolean recRemove(TreeNode root, Handle key, Handle value)
+    private boolean recRemove(TreeNode root, KVPair pair)
     {
-//        if (/**/)
-//        {
-//            KVPair pair = (prTrash.size() != 0)
-//                ? prTrash.remove(prTrash.size() - 1).set(key, value)
-//                : new KVPair(key, value);
-//            size--;
-//            return true;
-//        }
+        if (size == 0)
+        {
+            return false;
+        }
+        // if root is an Internal, then the method will search for the
+        // proper location to insert pair
+        if (root instanceof Internal)
+        {
+            if (pair.compareTo(((Internal)root).left()) == -1)
+                recRemove(((Internal)root).low(), pair);
+            else
+            {
+                if (((Internal)root).right() == null
+                    || pair.compareTo(((Internal)root).right()) == -1)
+                    recRemove(((Internal)root).mid(), pair);
+                else
+                    recRemove(((Internal)root).high(), pair);
+            }
+        }
+        else if (root instanceof Leaf)
+        {
+            if (!root.contains(pair))
+            {
+                return false;
+            }
+            else if (root.right() != null && root.right().compareTo(pair) == 0)
+            {
+                prTrash.add(root.right());
+                root.right().set(null);
+                return true;
+            }
+            else if (root.right() != null && root.left().compareTo(pair) == 0)
+            {
+                // TODO demote the left then remove it
+                prTrash.add(root.left());
+                // demote(root.left());
+                root.left().set(root.right());
+                root.right().set(null);
+            }
+            else
+            {
+                // TODO right is null, so need to demote then remove the leaf.
+            }
+        }
         return false;
     }
 
 
     @SuppressWarnings("hiding")
-    private void promote(TreeNode root, TreeNode orig, TreeNode split,
+    private void promote(
+        TreeNode root,
+        TreeNode orig,
+        TreeNode split,
         KVPair promo)
     {
         Internal inRoot;
@@ -217,9 +278,12 @@ public class Two3PlusTree
         // if root is orig, that means the method has promoted up to where it
         // needs a new this.root, which would be the parent of orig and split
         if (root == orig)
-            this.root = ((inTrash.size() != 0)
-                ? inTrash.remove(inTrash.size() - 1).set(promo, null, orig,
-                    split) : new Internal(promo, orig, split));
+            this.root =
+                ((inTrash.size() != 0) ? inTrash.remove(inTrash.size() - 1)
+                    .set(promo, null, orig, split) : new Internal(
+                    promo,
+                    orig,
+                    split));
 
         // if the promotion is less than the left KVPair of root, then the
         // method checks root.low()
@@ -243,18 +307,22 @@ public class Two3PlusTree
                 // is called again
                 else
                 {
-                    Internal parent = ((inTrash.size() != 0)
-                        ? inTrash.remove(inTrash.size() - 1).set(
-                            inRoot.high().left(), null, inRoot.mid(),
-                                inRoot.high())
-                        : new Internal(inRoot.high().left(),
-                            inRoot.mid(), inRoot.high()));
+                    Internal parent =
+                        ((inTrash.size() != 0) ? inTrash.remove(
+                            inTrash.size() - 1).set(
+                            inRoot.high().left(),
+                            null,
+                            inRoot.mid(),
+                            inRoot.high()) : new Internal(
+                            inRoot.high().left(),
+                            inRoot.mid(),
+                            inRoot.high()));
 
                     KVPair newPromo = inRoot.left();
                     inRoot.setMid(split);
                     inRoot.setLeft(promo);
 
-                    prTrash.add(inRoot.right());
+                    // prTrash.add(inRoot.right());
                     inRoot.setRight(null);
                     inRoot.setHigh(null);
 
@@ -271,8 +339,8 @@ public class Two3PlusTree
         // if the promotion is greater than or equal to the left KVPair of root,
         // and either the right KVPair of root is null, or the promotion is less
         // than the right KVPair of root, then the method checks root.mid()
-        else if (promo.compareTo(inRoot.left()) >= 0 &&
-            (inRoot.right() == null || promo.compareTo(inRoot.right()) == -1))
+        else if (promo.compareTo(inRoot.left()) >= 0
+            && (inRoot.right() == null || promo.compareTo(inRoot.right()) == -1))
         {
             if (inRoot.mid() == orig)
             {
@@ -291,14 +359,19 @@ public class Two3PlusTree
                 // is called again
                 else
                 {
-                    Internal parent = ((inTrash.size() != 0)
-                        ? inTrash.remove(inTrash.size() - 1).set(
-                            inRoot.high().left(), null, split, inRoot.high())
-                        : new Internal(inRoot.high().left(),
-                            split, inRoot.high()));
+                    Internal parent =
+                        ((inTrash.size() != 0) ? inTrash.remove(
+                            inTrash.size() - 1).set(
+                            inRoot.high().left(),
+                            null,
+                            split,
+                            inRoot.high()) : new Internal(
+                            inRoot.high().left(),
+                            split,
+                            inRoot.high()));
 
                     KVPair newPromo = split.left();
-                    prTrash.add(inRoot.right());
+                    // prTrash.add(inRoot.right());
                     inRoot.setRight(null);
                     inRoot.setHigh(null);
 
@@ -322,10 +395,12 @@ public class Two3PlusTree
             // is called again
             if (inRoot.high() == orig)
             {
-                Internal parent = ((inTrash.size() != 0)
-                    ? inTrash.remove(inTrash.size() - 1).set(promo, null,
-                        inRoot.high(), split)
-                    : new Internal(promo, inRoot.high(), split));
+                Internal parent =
+                    ((inTrash.size() != 0) ? inTrash.remove(inTrash.size() - 1)
+                        .set(promo, null, inRoot.high(), split) : new Internal(
+                        promo,
+                        inRoot.high(),
+                        split));
 
                 KVPair newPromo = inRoot.right();
                 inRoot.setRight(null);
@@ -366,5 +441,12 @@ public class Two3PlusTree
             }
         }
         return traversal;
+    }
+
+
+    public void clear()
+    {
+        root = null;
+        size = 0;
     }
 }

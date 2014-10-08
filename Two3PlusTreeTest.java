@@ -125,4 +125,39 @@ public class Two3PlusTreeTest extends student.TestCase
             + "      1 27 1 28\n"
             + "      1 32 1 40", tree.print());
     }
+
+ // ----------------------------------------------------------
+    /**
+     * Tests the search method.
+     */
+    public void testSearch()
+    {
+        assertNull(tree.search(new Handle(1)));
+
+        tree.insert(new Handle(1), new Handle(1));
+        assertNull(tree.search(new Handle(2)));
+
+        tree.insert(new Handle(2), new Handle(1));
+        assertEquals(2, tree.search(new Handle(2)).right().key().get());
+        assertEquals(1, tree.search(new Handle(1)).left().key().get());
+
+        tree.insert(new Handle(3), new Handle(1));
+        tree.insert(new Handle(0), new Handle(1));
+        tree.insert(new Handle(4), new Handle(1));
+        assertEquals("0 1", tree.search(new Handle(0)).left().toString());
+        //tests next case
+        assertEquals("2 1", tree.search(new Handle(2)).left().toString());
+        //--------
+        assertEquals("4 1", tree.search(new Handle(4)).right().toString());
+        assertEquals("1 1", tree.search(new Handle(1)).right().toString());
+        assertEquals("3 1", tree.search(new Handle(3)).left().toString());
+
+        tree.insert(new Handle(3), new Handle(45));
+        tree.insert(new Handle(3), new Handle(0));
+        tree.insert(new Handle(3), new Handle(8));
+        assertEquals("3 0", tree.search(new Handle(3)).right().toString());
+        assertEquals("3 0", tree.search(new Handle(3)).right().toString());
+        assertEquals("3 0", tree.search(new Handle(3)).right().toString());
+
+    }
 }
