@@ -1,11 +1,11 @@
 // -------------------------------------------------------------------------
 /**
- *  The TreeNode class contains two KVPairs (left and right).
+ *  The abstract TreeNode class contains two KVPairs (left and right).
  *
  *  @author Burhan Ishaq (iburhan), Amin Davoodi (amind1)
  *  @version Oct 3, 2014
  */
-public class TreeNode
+public abstract class TreeNode
 {
     private KVPair left;
     private KVPair right;
@@ -124,7 +124,7 @@ public class TreeNode
     @Override
     public String toString()
     {
-        return ((left != null) ? left.toString() : "")
-            + ((right != null) ? " " + right.toString() : "");
+        return ((left != null) ? left : "")
+            + ((right != null) ? " " + right : "");
     }
 }

@@ -270,7 +270,7 @@ public class DoublyLinkedList<T>
         String str = "";
         for (int i = 0; i < size; i++)
         {
-            str += temp.get().toString() + " -> ";
+            str += temp.get() + " -> ";
             temp = temp.next();
         }
         return (size > 0) ? str.substring(0, str.length() - 4) : str;

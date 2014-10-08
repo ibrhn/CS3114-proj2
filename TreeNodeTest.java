@@ -20,7 +20,7 @@ public class TreeNodeTest
     {
         KVPair pair = new KVPair(new Handle(2), new Handle(4));
 
-        node = new TreeNode(pair);
+        node = new Leaf(pair);
         internal = new Internal(pair, null, null);
         leaf = new Leaf(pair);
     }
@@ -41,7 +41,7 @@ public class TreeNodeTest
         assertFalse(node.containsEqual(new KVPair(new Handle(2),
             new Handle(5))));
 
-        node = new TreeNode(new KVPair(new Handle(3), new Handle(5)),
+        node = new Leaf(new KVPair(new Handle(3), new Handle(5)),
             new KVPair(new Handle(2), new Handle(4)));
 
         node.compSet((left = new KVPair(new Handle(2), new Handle(4))),
@@ -75,9 +75,9 @@ public class TreeNodeTest
      */
     public void testInternal()
     {
-        TreeNode low = new TreeNode(new KVPair(new Handle(0), new Handle(1)));
-        TreeNode mid = new TreeNode(new KVPair(new Handle(1), new Handle(2)));
-        TreeNode high = new TreeNode(new KVPair(new Handle(2), new Handle(3)));
+        TreeNode low = new Leaf(new KVPair(new Handle(0), new Handle(1)));
+        TreeNode mid = new Leaf(new KVPair(new Handle(1), new Handle(2)));
+        TreeNode high = new Leaf(new KVPair(new Handle(2), new Handle(3)));
 
         internal.set(new KVPair(new Handle(3), new Handle(4)),
             new KVPair(new Handle(4), new Handle(5)), low, mid);

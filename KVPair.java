@@ -34,9 +34,9 @@ public class KVPair
      * knows how to compare against First compare the key field. If they are
      * identical, then break the tie with the value field.
      *
-     * @return the usual for a comparable (+, 0, -)
      * @param pair
      *            the KVPair to compare "this" against
+     * @return the usual for a comparable (+, 0, -)
      */
     public int compareTo(KVPair pair)
     {
@@ -135,6 +135,6 @@ public class KVPair
     @Override
     public String toString()
     {
-        return key.toString() + " " + value.toString();
+        return key + " " + value;
     }
 }
