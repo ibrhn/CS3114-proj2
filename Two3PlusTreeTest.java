@@ -46,9 +46,9 @@ public class Two3PlusTreeTest extends student.TestCase
 
         tree.insert(new Handle(1), new Handle(32));
         assertEquals("Printing 2-3 tree:\n"
-                   + "1 16\n"
-                   + "  1 8\n"
-                   + "  1 16 1 32", tree.print());
+            + "1 16\n"
+            + "  1 8\n"
+            + "  1 16 1 32", tree.print());
 
         tree.insert(new Handle(1), new Handle(24));
         assertEquals("Printing 2-3 tree:\n"

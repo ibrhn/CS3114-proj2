@@ -62,7 +62,7 @@ public class TreeNodeTest
 
         assertEquals("3 5", node.toString());
 
-        node.compSet(null, node.right());
+        node.compSet(null, null);
         assertTrue(node.containsEqual(null));
         assertFalse(node.containsEqual(new KVPair(new Handle(0),
             new Handle(1))));
