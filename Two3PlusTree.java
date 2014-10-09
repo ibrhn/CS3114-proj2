@@ -218,6 +218,7 @@ public class Two3PlusTree
     @SuppressWarnings("hiding")
     private boolean recRemove(TreeNode root, KVPair pair)
     {
+        Internal inRoot;
         if (size == 0)
         {
             return false;
@@ -226,43 +227,88 @@ public class Two3PlusTree
         // proper location to insert pair
         if (root instanceof Internal)
         {
-            if (pair.compareTo(((Internal)root).left()) == -1)
-                recRemove(((Internal)root).low(), pair);
-            else
+            if ((inRoot = (Internal)root).low() instanceof Internal)
             {
-                if (((Internal)root).right() == null
-                    || pair.compareTo(((Internal)root).right()) == -1)
-                    recRemove(((Internal)root).mid(), pair);
+                if (pair.compareTo(inRoot.left()) == -1)
+                    recRemove(inRoot.low(), pair);
                 else
-                    recRemove(((Internal)root).high(), pair);
+                {
+                    if (inRoot.right() == null
+                        || pair.compareTo(inRoot.right()) == -1)
+                        recRemove(inRoot.mid(), pair);
+                    else
+                        recRemove(inRoot.high(), pair);
+                }
+            }
+            else if (inRoot.low() instanceof Leaf) {
+
+                if (!root.contains(pair))
+                {
+                    return false;
+                }
+                // the right kvpair has the data we're looking for
+                else if (root.right() != null && root.right().compareTo(pair) == 0)
+                {
+                    prTrash.add(root.right());
+                    root.right().set(null);
+                    return true;
+                }
+                else if (root.left().compareTo(pair) == 0)
+                {
+
+                }
+                else
+                {
+
+                    // TODO right is null, so need to demote then remove the leaf.
+                }
             }
         }
         else if (root instanceof Leaf)
         {
+            // if the leaf does not contain the pair
             if (!root.contains(pair))
             {
                 return false;
             }
+            // the right kvpair has the data we're looking for
             else if (root.right() != null && root.right().compareTo(pair) == 0)
             {
                 prTrash.add(root.right());
                 root.right().set(null);
                 return true;
             }
-            else if (root.right() != null && root.left().compareTo(pair) == 0)
+            else if (root.left().compareTo(pair) == 0)
             {
-                // TODO demote the left then remove it
-                prTrash.add(root.left());
-                // demote(root.left());
-                root.left().set(root.right());
-                root.right().set(null);
+
             }
             else
             {
+
                 // TODO right is null, so need to demote then remove the leaf.
             }
         }
         return false;
+    }
+
+
+    private void promote(TreeNode root, TreeNode origRoot, KVPair update)
+    {
+
+        Internal inRoot;
+
+        if (root == origRoot)
+        {
+            origRoot = null;
+        }
+        else if ((inRoot = (Internal)root).left().compareTo(update) == -1)
+        {
+
+        }
+        else if ((inRoot = (Internal)root).left().compareTo(update) == 0)
+        {
+
+        }
     }
 
 
@@ -441,12 +487,5 @@ public class Two3PlusTree
             }
         }
         return traversal;
-    }
-
-
-    public void clear()
-    {
-        root = null;
-        size = 0;
     }
 }
