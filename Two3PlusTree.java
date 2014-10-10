@@ -240,34 +240,44 @@ public class Two3PlusTree
                         recRemove(inRoot.high(), pair);
                 }
             }
-            else if (inRoot.low() instanceof Leaf) {
+            else if (inRoot.low() instanceof Leaf)
+            {
 
-                if (!root.contains(pair))
+                Leaf lfRoot;
+
+                if (inRoot.low().containsEqual(pair))
                 {
-                    return false;
+
+                    lfRoot = ((Leaf)inRoot.low());
+
+                    if (lfRoot.left().equals(pair) && lfRoot.right() != null)
+                    {
+
+                        lfRoot.compSet(lfRoot.right(), null);
+                        update(inRoot, root, pair, -1);
+                    }
                 }
-                // the right kvpair has the data we're looking for
-                else if (root.right() != null && root.right().compareTo(pair) == 0)
+                else if (inRoot.mid().contains(pair))
                 {
-                    prTrash.add(root.right());
-                    root.right().set(null);
-                    return true;
+                    lfRoot = ((Leaf)inRoot.mid());
+
                 }
-                else if (root.left().compareTo(pair) == 0)
+                else if (inRoot.high().containsEqual(pair))
                 {
+                    lfRoot = ((Leaf)inRoot.high());
 
                 }
                 else
                 {
-
-                    // TODO right is null, so need to demote then remove the leaf.
+                    return false;
                 }
             }
+            return true;
         }
         else if (root instanceof Leaf)
         {
             // if the leaf does not contain the pair
-            if (!root.contains(pair))
+            if (!root.containsEqual(pair))
             {
                 return false;
             }
@@ -292,21 +302,17 @@ public class Two3PlusTree
     }
 
 
-    private void promote(TreeNode root, TreeNode origRoot, KVPair update)
+    private void update(Internal parentRoot, TreeNode origRoot, KVPair update, int place)
     {
-
-        Internal inRoot;
-
-        if (root == origRoot)
-        {
-            origRoot = null;
+        if (place == -1) {
+            if (parentRoot.low().right() != null) {
+                parentRoot.setLeft(update);
+            }
         }
-        else if ((inRoot = (Internal)root).left().compareTo(update) == -1)
-        {
+        else if (place == 0) {
 
         }
-        else if ((inRoot = (Internal)root).left().compareTo(update) == 0)
-        {
+        else if (place == 1) {
 
         }
     }
