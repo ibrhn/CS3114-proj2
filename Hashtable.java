@@ -33,7 +33,7 @@ public class Hashtable
      * controller.
      *
      * @param ctrl
-     *            controller that manages the Hashtable and MemPool
+     *            Controller that manages the Hashtable and MemPool
      */
     public Hashtable(Controller ctrl)
     {
@@ -73,8 +73,8 @@ public class Hashtable
                 map = new Handle[map.length * 2];
 
                 for (int i = 0; i < copy.length; i++)
-                    if (getString(copy[i]) != null)
-                        map[findPos(getString(copy[i]))] = copy[i];
+                    if (ctrl.pool().getString(copy[i]) != null)
+                        map[findPos(ctrl.pool().getString(copy[i]))] = copy[i];
 
                 pos = findPos(key);
             }
@@ -156,8 +156,8 @@ public class Hashtable
         String hndl;
         String str = "";
         for (int i = 0; i < map.length; i++)
-            if ((hndl = getString(map[i])) != null && map[i] != null &&
-                map[i].get() != -1)
+            if ((hndl = ctrl.pool().getString(map[i])) != null
+            && map[i] != null && map[i].get() != -1)
                 str += "|" + hndl + "| " + i + "\n";
         return str;
     }
@@ -204,8 +204,9 @@ public class Hashtable
                 tmbstn = pos;
 
             // returns -1 if there is a duplicate String already in the pool
-            else if (map[pos].get() != -1 && getString(map[pos]).equals(key))
-                return -1;
+            else if (map[pos].get() != -1
+                && ctrl.pool().getString(map[pos]).equals(key))
+                    return -1;
         }
 
         // if a tombstone was encountered before the null position, that means
@@ -235,20 +236,11 @@ public class Hashtable
                 return -1;
 
             // returns pos if a Handle corresponding to key is found
-            else if (map[pos].get() != -1 && getString(map[pos]).equals(key))
-                return pos;
+            else if (map[pos].get() != -1
+                && ctrl.pool().getString(map[pos]).equals(key))
+                    return pos;
         }
         return -1;
-    }
-
-
-    private String getString(Handle h)
-        throws Exception
-    {
-        // returns null if h is null or a tombstone, otherwise it returns the
-        // String in the pool corresponding to h
-        return (h == null || h.get() == -1) ?
-            null : new String(ctrl.pool().getBytes(h), "UTF-8");
     }
 
 

@@ -120,7 +120,6 @@ public abstract class TreeNode
     }
 
 
-
     // ----------------------------------------------------------
     @Override
     public String toString()

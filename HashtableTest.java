@@ -24,7 +24,6 @@ public class HashtableTest
     // ----------------------------------------------------------
     /**
      * Tests the remove method.
-     *
      * @throws Exception
      */
     public void testRemove()
@@ -42,7 +41,6 @@ public class HashtableTest
     // ----------------------------------------------------------
     /**
      * Tests the put method.
-     *
      * @throws Exception
      */
     public void testPut()
@@ -87,7 +85,6 @@ public class HashtableTest
     // ----------------------------------------------------------
     /**
      * Tests the print method.
-     *
      * @throws Exception
      */
     public void testPrint()

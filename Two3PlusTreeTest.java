@@ -8,6 +8,7 @@
 public class Two3PlusTreeTest extends student.TestCase
 {
     private Two3PlusTree tree;
+    private Controller ctrl;
 
     // ----------------------------------------------------------
     /**
@@ -15,7 +16,7 @@ public class Two3PlusTreeTest extends student.TestCase
      */
     public void setUp()
     {
-        tree = new Two3PlusTree();
+        tree = new Two3PlusTree(ctrl);
     }
 
 
@@ -26,7 +27,7 @@ public class Two3PlusTreeTest extends student.TestCase
     public void testInsert()
     {
         assertEquals(0, tree.size());
-        assertEquals("Printing 2-3 tree:", tree.print());
+        assertEquals("Printing 2-3 tree:\n", tree.print());
 
         Handle one = new Handle(1);
         Handle eight = new Handle(8);
@@ -34,28 +35,28 @@ public class Two3PlusTreeTest extends student.TestCase
         tree.insert(one, eight);
         assertEquals(1, tree.size());
         assertEquals("Printing 2-3 tree:\n"
-                 +   "1 8", tree.print());
+            +   "1 8\n", tree.print());
 
         assertFalse(tree.insert(one, eight));
         assertEquals("Printing 2-3 tree:\n"
-                   + "1 8", tree.print());
+            + "1 8\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(16));
         assertEquals("Printing 2-3 tree:\n"
-            + "1 8 1 16", tree.print());
+            + "1 8 1 16\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(32));
         assertEquals("Printing 2-3 tree:\n"
             + "1 16\n"
             + "  1 8\n"
-            + "  1 16 1 32", tree.print());
+            + "  1 16 1 32\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(24));
         assertEquals("Printing 2-3 tree:\n"
             + "1 16 1 24\n"
             + "  1 8\n"
             + "  1 16\n"
-            + "  1 24 1 32", tree.print());
+            + "  1 24 1 32\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(40));
         assertEquals("Printing 2-3 tree:\n"
@@ -65,7 +66,7 @@ public class Two3PlusTreeTest extends student.TestCase
             + "    1 16\n"
             + "  1 32\n"
             + "    1 24\n"
-            + "    1 32 1 40", tree.print());
+            + "    1 32 1 40\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(4));
         tree.insert(new Handle(1), new Handle(5));
@@ -77,7 +78,7 @@ public class Two3PlusTreeTest extends student.TestCase
             + "    1 16\n"
             + "  1 32\n"
             + "    1 24\n"
-            + "    1 32 1 40", tree.print());
+            + "    1 32 1 40\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(27));
         tree.insert(new Handle(1), new Handle(28));
@@ -90,7 +91,7 @@ public class Two3PlusTreeTest extends student.TestCase
             + "  1 27 1 32\n"
             + "    1 24\n"
             + "    1 27 1 28\n"
-            + "    1 32 1 40", tree.print());
+            + "    1 32 1 40\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(12));
         assertEquals("Printing 2-3 tree:\n"
@@ -104,7 +105,7 @@ public class Two3PlusTreeTest extends student.TestCase
             + "  1 27 1 32\n"
             + "    1 24\n"
             + "    1 27 1 28\n"
-            + "    1 32 1 40", tree.print());
+            + "    1 32 1 40\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(25));
         tree.insert(new Handle(1), new Handle(26));
@@ -123,10 +124,11 @@ public class Two3PlusTreeTest extends student.TestCase
             + "      1 25 1 26\n"
             + "    1 32\n"
             + "      1 27 1 28\n"
-            + "      1 32 1 40", tree.print());
+            + "      1 32 1 40\n", tree.print());
     }
 
- // ----------------------------------------------------------
+
+    // ----------------------------------------------------------
     /**
      * Tests the search method.
      */
@@ -144,20 +146,19 @@ public class Two3PlusTreeTest extends student.TestCase
         tree.insert(new Handle(3), new Handle(1));
         tree.insert(new Handle(0), new Handle(1));
         tree.insert(new Handle(4), new Handle(1));
-        assertEquals("0 1", tree.search(new Handle(0)).left().toString());
-        //tests next case
-        assertEquals("2 1", tree.search(new Handle(2)).left().toString());
-        //--------
-        assertEquals("4 1", tree.search(new Handle(4)).right().toString());
-        assertEquals("1 1", tree.search(new Handle(1)).right().toString());
-        assertEquals("3 1", tree.search(new Handle(3)).left().toString());
+        assertEquals(0, tree.search(new Handle(0)).left().key().get());
+        assertEquals(2, tree.search(new Handle(2)).left().key().get());
+        assertEquals(4, tree.search(new Handle(4)).right().key().get());
+    }
 
-        tree.insert(new Handle(3), new Handle(45));
-        tree.insert(new Handle(3), new Handle(0));
-        tree.insert(new Handle(3), new Handle(8));
-        assertEquals("3 0", tree.search(new Handle(3)).right().toString());
-        assertEquals("3 0", tree.search(new Handle(3)).right().toString());
-        assertEquals("3 0", tree.search(new Handle(3)).right().toString());
 
+    // ----------------------------------------------------------
+    /**
+     * Tests the list method.
+     * @throws Exception
+     */
+    public void testList() throws Exception
+    {
+        assertEquals("", tree.list(new Handle(0)));
     }
 }

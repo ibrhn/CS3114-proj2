@@ -64,8 +64,9 @@ public class MemPoolTest
     // ----------------------------------------------------------
     /**
      * Tests the insert method.
+     * @throws Exception
      */
-    public void testInsert()
+    public void testInsert() throws Exception
     {
         assertEquals(12, pool.capacity());
         assertEquals("(0,12)", pool.dump());
@@ -73,6 +74,10 @@ public class MemPoolTest
         Handle dict = new Handle(pool.insert("dictionary".getBytes()));
         assertTrue(Arrays.equals("dictionary".getBytes(), pool.getBytes(dict)));
         assertEquals("", pool.dump());
+
+        assertNull(pool.getString(null));
+        assertNull(pool.getString(new Handle(-1)));
+        assertEquals("dictionary", pool.getString(dict));
 
         pool.insert("willy".getBytes());
         assertEquals("(19,5)", pool.dump());

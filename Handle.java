@@ -5,8 +5,7 @@
  * @author Burhan Ishaq (iburhan), Amin Davoodi (amind1)
  * @version Sep 14, 2014
  */
-public class Handle
-    implements Comparable<Handle>
+public class Handle implements Comparable<Handle>
 {
     private int num;
 
@@ -57,25 +56,17 @@ public class Handle
 
     // ----------------------------------------------------------
     @Override
-    public String toString()
+    public boolean equals(Object obj)
     {
-        return String.valueOf(num);
+        return (obj != null) && (obj instanceof Handle) &&
+            compareTo((Handle)obj) == 0;
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * compares the handles data to see if they are equal
-     *
-     * @param h
-     *            the handle to check
-     * @return true if the handles have same data false otherwise
-     */
-    public boolean equals(Object h)
+    @Override
+    public String toString()
     {
-
-        return (h != null) && (h instanceof Handle)
-            && (num == ((Handle)h).get());
-
+        return String.valueOf(num);
     }
 }

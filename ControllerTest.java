@@ -31,7 +31,7 @@ public class ControllerTest
     public void testParse()
         throws Exception
     {
-        String[] in = { "10", "32", "input.txt" };
+        String[] in = {"10", "32", "input.txt"};
         mm.main(in);
 
         assertEquals(10, mm.controller().initHashSz());

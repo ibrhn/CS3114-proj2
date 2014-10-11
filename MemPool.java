@@ -198,6 +198,22 @@ public class MemPool
 
     // ----------------------------------------------------------
     /**
+     * @param h Handle to find String in the pool
+     * @return String at h.get() in the pool
+     * @throws Exception
+     */
+    public String getString(Handle h)
+        throws Exception
+    {
+        // returns null if h is null or a tombstone, otherwise it returns the
+        // String in the pool corresponding to h
+        return (h == null || h.get() == -1) ?
+            null : new String(getBytes(h), "UTF-8");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * @return String representation of the free-block list
      */
     public String dump()
