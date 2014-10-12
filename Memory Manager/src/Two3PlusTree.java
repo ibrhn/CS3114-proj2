@@ -397,6 +397,8 @@ public class Two3PlusTree
                 }
                 else
                 {
+                    ((Leaf)parent.low()).link((Leaf)parent.high());
+
                     prTrash.add(parent.mid().left());
                     lfTrash.add((Leaf)parent.mid());
 
@@ -590,8 +592,10 @@ public class Two3PlusTree
             {
                 if ((adj = (Internal)root.mid()).isFull())
                 {
-                    // TODO set Leaf pointers
-                    ((Leaf)parent.low()).previous().link((Leaf)parent.mid());
+                    (((Leaf)((parent.low() == rem)
+                        ? ((Leaf)parent.low()).previous()
+                            : parent.low()))).link((Leaf)((parent.low() == rem)
+                                ? parent.mid() : adj.low()));
 
                     prTrash.add((parent.low() == rem)
                         ? parent.low().left() : parent.mid().left());
@@ -616,6 +620,12 @@ public class Two3PlusTree
 
                     adj.setLow((parent.low() == rem)
                         ? parent.mid() : parent.low());
+
+                    (((Leaf)((parent.low() == rem)
+                        ? ((Leaf)parent.low()).previous()
+                            : parent.low()))).link((Leaf)((parent.low() == rem)
+                                ? parent.mid() : adj.low()));
+
                     prTrash.add((parent.low() == rem)
                         ? parent.low().left() : parent.mid().left());
                     lfTrash.add((Leaf)((parent.low() == rem)
@@ -645,6 +655,11 @@ public class Two3PlusTree
             {
                 if ((adj = (Internal)root.low()).isFull())
                 {
+                    ((Leaf)((parent.mid() == rem)
+                        ? (parent.low())
+                            : adj.high())).link((Leaf)((parent.mid() == rem)
+                                ? ((Leaf)parent.mid()).next() : parent.mid()));
+
                     prTrash.add((parent.mid() == rem)
                         ? parent.mid().left() : parent.low().left());
                     lfTrash.add((Leaf)((parent.mid() == rem)
@@ -660,6 +675,11 @@ public class Two3PlusTree
                 }
                 else if ((adj = (Internal)root.high()).isFull())
                 {
+                    (((Leaf)((parent.low() == rem)
+                        ? ((Leaf)parent.low()).previous()
+                            : parent.low()))).link((Leaf)((parent.low() == rem)
+                                ? parent.mid() : adj.low()));
+
                     prTrash.add((parent.low() == rem)
                         ? parent.low().left() : parent.mid().left());
                     lfTrash.add((Leaf)((parent.low() == rem)
@@ -675,6 +695,11 @@ public class Two3PlusTree
                 }
                 else if (root.isFull())
                 {
+                    ((Leaf)((parent.low() == rem)
+                        ? ((Leaf)parent.low()).previous()
+                            : parent.low())).link((Leaf)((parent.low() == rem)
+                                ? parent.mid() : ((Leaf)parent.mid()).next()));
+
                     (adj = (Internal)root.low()).setHigh((parent.low() == rem)
                         ? parent.mid() : parent.low());
                     adj.setRight(adj.high().left());
@@ -704,6 +729,13 @@ public class Two3PlusTree
             {
                 if ((adj = (Internal)root.mid()).isFull())
                 {
+                    ((Leaf)((parent.mid() == rem)
+                        ? parent.low()
+                            : ((Leaf)parent.low()).previous())).link(
+                                (Leaf)((parent.mid() == rem)
+                                    ? ((Leaf)parent.mid()).next()
+                                        : parent.mid()));
+
                     prTrash.add((parent.mid() == rem)
                         ? parent.mid().left() : parent.low().left());
                     lfTrash.add((Leaf)((parent.mid() == rem)
@@ -719,6 +751,11 @@ public class Two3PlusTree
                 }
                 else
                 {
+                    ((Leaf)((parent.low() == rem)
+                        ? ((Leaf)parent.low()).previous()
+                            : parent.low())).link((Leaf)((parent.low() == rem)
+                                ? parent.mid() : ((Leaf)parent.mid()).next()));
+
                     adj.setHigh((parent.low() == rem)
                         ? parent.mid() : parent.low());
                     adj.setRight(adj.high().left());
