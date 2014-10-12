@@ -46,7 +46,6 @@ public class TreeNodeTest
 
         node.compSet((left = new KVPair(new Handle(2), new Handle(4))),
             (right = new KVPair(new Handle(3), new Handle(5))));
-        assertTrue(node.isFull());
 
         assertTrue(node.contains(left));
         assertTrue(node.contains(right));
@@ -58,7 +57,6 @@ public class TreeNodeTest
         assertEquals("2 4 3 5", node.toString());
 
         node.compSet(right, null);
-        assertFalse(node.isFull());
         assertEquals(right, node.left());
         assertNull(node.right());
 
@@ -98,9 +96,8 @@ public class TreeNodeTest
     public void testLeaf()
     {
         Leaf next = new Leaf(new KVPair(new Handle(5), new Handle(6)), null);
-        assertEquals(next, leaf.link(next));
+        leaf.setNext(next);
 
         assertEquals(next, leaf.next());
-        assertEquals(leaf, next.previous());
     }
 }

@@ -99,16 +99,6 @@ public abstract class TreeNode
 
     // ----------------------------------------------------------
     /**
-     * @return if this is full
-     */
-    public boolean isFull()
-    {
-        return right != null;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * @param pair KVPair to compare to
      * @return if this contains the same pair
      */
