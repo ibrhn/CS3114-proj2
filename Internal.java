@@ -111,6 +111,8 @@ public class Internal
      */
     public void setHigh(TreeNode high)
     {
+        if (high == null)
+            setRight(null);
         this.high = high;
     }
 }
