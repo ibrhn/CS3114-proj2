@@ -1,14 +1,16 @@
 // -------------------------------------------------------------------------
 /**
- *  Tests the Two3PlusTree class.
+ * Tests the Two3PlusTree class.
  *
- *  @author Burhan Ishaq (iburhan), Amin Davoodi (amind1)
- *  @version Oct 6, 2014
+ * @author Burhan Ishaq (iburhan), Amin Davoodi (amind1)
+ * @version Oct 6, 2014
  */
-public class Two3PlusTreeTest extends student.TestCase
+public class Two3PlusTreeTest
+    extends student.TestCase
 {
     private Two3PlusTree tree;
-    private Controller ctrl;
+    private Controller   ctrl;
+
 
     // ----------------------------------------------------------
     /**
@@ -26,105 +28,60 @@ public class Two3PlusTreeTest extends student.TestCase
      */
     public void testInsert()
     {
-        assertEquals(0, tree.size());
         assertEquals("Printing 2-3 tree:\n", tree.print());
 
         Handle one = new Handle(1);
         Handle eight = new Handle(8);
 
         tree.insert(one, eight);
-        assertEquals(1, tree.size());
-        assertEquals("Printing 2-3 tree:\n"
-            +   "1 8\n", tree.print());
+        assertEquals("Printing 2-3 tree:\n" + "1 8\n", tree.print());
 
         assertFalse(tree.insert(one, eight));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 8\n", tree.print());
+        assertEquals("Printing 2-3 tree:\n" + "1 8\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(16));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 8 1 16\n", tree.print());
+        assertEquals("Printing 2-3 tree:\n" + "1 8 1 16\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(32));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 16\n"
-            + "  1 8\n"
+        assertEquals("Printing 2-3 tree:\n" + "1 16\n" + "  1 8\n"
             + "  1 16 1 32\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(24));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 16 1 24\n"
-            + "  1 8\n"
-            + "  1 16\n"
-            + "  1 24 1 32\n", tree.print());
+        assertEquals("Printing 2-3 tree:\n" + "1 16 1 24\n" + "  1 8\n"
+            + "  1 16\n" + "  1 24 1 32\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(40));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 24\n"
-            + "  1 16\n"
-            + "    1 8\n"
-            + "    1 16\n"
-            + "  1 32\n"
-            + "    1 24\n"
+        assertEquals("Printing 2-3 tree:\n" + "1 24\n" + "  1 16\n"
+            + "    1 8\n" + "    1 16\n" + "  1 32\n" + "    1 24\n"
             + "    1 32 1 40\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(4));
         tree.insert(new Handle(1), new Handle(5));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 24\n"
-            + "  1 5 1 16\n"
-            + "    1 4\n"
-            + "    1 5 1 8\n"
-            + "    1 16\n"
-            + "  1 32\n"
-            + "    1 24\n"
-            + "    1 32 1 40\n", tree.print());
+        assertEquals("Printing 2-3 tree:\n" + "1 24\n" + "  1 5 1 16\n"
+            + "    1 4\n" + "    1 5 1 8\n" + "    1 16\n" + "  1 32\n"
+            + "    1 24\n" + "    1 32 1 40\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(27));
         tree.insert(new Handle(1), new Handle(28));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 24\n"
-            + "  1 5 1 16\n"
-            + "    1 4\n"
-            + "    1 5 1 8\n"
-            + "    1 16\n"
-            + "  1 27 1 32\n"
-            + "    1 24\n"
-            + "    1 27 1 28\n"
-            + "    1 32 1 40\n", tree.print());
+        assertEquals(
+            "Printing 2-3 tree:\n" + "1 24\n" + "  1 5 1 16\n" + "    1 4\n"
+                + "    1 5 1 8\n" + "    1 16\n" + "  1 27 1 32\n"
+                + "    1 24\n" + "    1 27 1 28\n" + "    1 32 1 40\n",
+            tree.print());
 
         tree.insert(new Handle(1), new Handle(12));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 8 1 24\n"
-            + "  1 5\n"
-            + "    1 4\n"
-            + "    1 5\n"
-            + "  1 16\n"
-            + "    1 8 1 12\n"
-            + "    1 16\n"
-            + "  1 27 1 32\n"
-            + "    1 24\n"
-            + "    1 27 1 28\n"
+        assertEquals("Printing 2-3 tree:\n" + "1 8 1 24\n" + "  1 5\n"
+            + "    1 4\n" + "    1 5\n" + "  1 16\n" + "    1 8 1 12\n"
+            + "    1 16\n" + "  1 27 1 32\n" + "    1 24\n" + "    1 27 1 28\n"
             + "    1 32 1 40\n", tree.print());
 
         tree.insert(new Handle(1), new Handle(25));
         tree.insert(new Handle(1), new Handle(26));
-        assertEquals("Printing 2-3 tree:\n"
-            + "1 24\n"
-            + "  1 8\n"
-            + "    1 5\n"
-            + "      1 4\n"
-            + "      1 5\n"
-            + "    1 16\n"
-            + "      1 8 1 12\n"
-            + "      1 16\n"
-            + "  1 27\n"
-            + "    1 25\n"
-            + "      1 24\n"
-            + "      1 25 1 26\n"
-            + "    1 32\n"
-            + "      1 27 1 28\n"
-            + "      1 32 1 40\n", tree.print());
+        assertEquals("Printing 2-3 tree:\n" + "1 24\n" + "  1 8\n"
+            + "    1 5\n" + "      1 4\n" + "      1 5\n" + "    1 16\n"
+            + "      1 8 1 12\n" + "      1 16\n" + "  1 27\n" + "    1 25\n"
+            + "      1 24\n" + "      1 25 1 26\n" + "    1 32\n"
+            + "      1 27 1 28\n" + "      1 32 1 40\n", tree.print());
     }
 
 
@@ -155,10 +112,256 @@ public class Two3PlusTreeTest extends student.TestCase
     // ----------------------------------------------------------
     /**
      * Tests the list method.
+     *
      * @throws Exception
      */
-    public void testList() throws Exception
+    public void testList()
+        throws Exception
     {
         assertEquals("", tree.list(new Handle(0)));
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Tests remove method
+     */
+    public void testDelete()
+    {
+
+        tree.insert(new Handle(1), new Handle(8));
+        tree.insert(new Handle(1), new Handle(16));
+
+        assertTrue(tree.delete(new Handle(1), new Handle(16)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 8\n", tree.print());
+        assertTrue(tree.delete(new Handle(1), new Handle(8)));
+        assertEquals("Printing 2-3 tree:\n", tree.print());
+
+        tree.insert(new Handle(1), new Handle(8));
+        tree.insert(new Handle(1), new Handle(16));
+        tree.insert(new Handle(1), new Handle(32));
+        tree.insert(new Handle(1), new Handle(24));
+        tree.insert(new Handle(1), new Handle(40));
+
+
+        tree.insert(new Handle(1), new Handle(4));
+        tree.insert(new Handle(1), new Handle(5));
+        tree.insert(new Handle(1), new Handle(27));
+        tree.insert(new Handle(1), new Handle(28));
+        tree.insert(new Handle(1), new Handle(12));
+        tree.insert(new Handle(1), new Handle(25));
+        tree.insert(new Handle(1), new Handle(26));
+        //assertEquals(12, tree.size());
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 8\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 16\n"
+        + "      1 8 1 12\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 25\n"
+        + "      1 24\n"
+        + "      1 25 1 26\n"
+        + "    1 32\n"
+        + "      1 27 1 28\n"
+        + "      1 32 1 40\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(40)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 8\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 16\n"
+        + "      1 8 1 12\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 25\n"
+        + "      1 24\n"
+        + "      1 25 1 26\n"
+        + "    1 32\n"
+        + "      1 27 1 28\n"
+        + "      1 32\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(28)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 8\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 16\n"
+        + "      1 8 1 12\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 25\n"
+        + "      1 24\n"
+        + "      1 25 1 26\n"
+        + "    1 32\n"
+        + "      1 27\n"
+        + "      1 32\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(25)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 8\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 16\n"
+        + "      1 8 1 12\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 32\n"
+        + "      1 27\n"
+        + "      1 32\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(8)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 12\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 16\n"
+        + "      1 12\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 32\n"
+        + "      1 27\n"
+        + "      1 32\n", tree.print());
+
+
+        assertTrue(tree.insert(new Handle(1), new Handle(33)));
+        assertTrue(tree.insert(new Handle(1), new Handle(34)));
+        assertTrue(tree.insert(new Handle(1), new Handle(14)));
+        assertTrue(tree.insert(new Handle(1), new Handle(15)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 12\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 14 1 16\n"
+        + "      1 12\n"
+        + "      1 14 1 15\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 32 1 33\n"
+        + "      1 27\n"
+        + "      1 32\n"
+        + "      1 33 1 34\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(33)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 12\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 14 1 16\n"
+        + "      1 12\n"
+        + "      1 14 1 15\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 32 1 34\n"
+        + "      1 27\n"
+        + "      1 32\n"
+        + "      1 34\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(32)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 12\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 14 1 16\n"
+        + "      1 12\n"
+        + "      1 14 1 15\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 34\n"
+        + "      1 27\n"
+        + "      1 34\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(12)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 14\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 15 1 16\n"
+        + "      1 14\n"
+        + "      1 15\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 34\n"
+        + "      1 27\n"
+        + "      1 34\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(14)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 15\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 16\n"
+        + "      1 15\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 34\n"
+        + "      1 27\n"
+        + "      1 34\n", tree.print());
+
+        assertTrue(tree.insert(new Handle(1), new Handle(36)));
+        assertTrue(tree.insert(new Handle(1), new Handle(35)));
+        assertTrue(tree.delete(new Handle(1), new Handle(36)));
+        assertTrue(tree.delete(new Handle(1), new Handle(35)));
+        assertEquals("Printing 2-3 tree:\n"
+        + "1 24\n"
+        + "  1 15\n"
+        + "    1 5\n"
+        + "      1 4\n"
+        + "      1 5\n"
+        + "    1 16\n"
+        + "      1 15\n"
+        + "      1 16\n"
+        + "  1 27\n"
+        + "    1 26\n"
+        + "      1 24\n"
+        + "      1 26\n"
+        + "    1 34\n"
+        + "      1 27\n"
+        + "      1 34\n", tree.print());
+
     }
 }

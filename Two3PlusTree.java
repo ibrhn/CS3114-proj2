@@ -12,7 +12,6 @@ public class Two3PlusTree
 {
     private Controller          ctrl;
     private TreeNode            root;
-    private int                 size;
     private ArrayList<KVPair>   prTrash;
     private ArrayList<Internal> inTrash;
     private ArrayList<Leaf>     lfTrash;
@@ -28,7 +27,6 @@ public class Two3PlusTree
     public Two3PlusTree(Controller ctrl)
     {
         this.ctrl = ctrl;
-        size = 0;
         prTrash = new ArrayList<KVPair>();
         inTrash = new ArrayList<Internal>();
         lfTrash = new ArrayList<Leaf>();
@@ -123,20 +121,10 @@ public class Two3PlusTree
     }
 
 
-    // ----------------------------------------------------------
-    /**
-     * @return the size of the Two3PlusTree (number of TreeNodes in the tree)
-     */
-    public int size()
-    {
-        return size;
-    }
-
-
     @SuppressWarnings("hiding")
     private Leaf find(TreeNode root, Handle key)
     {
-        if (size != 0)
+        if (this.root != null)
         {
             if (root instanceof Internal)
             {
@@ -179,7 +167,7 @@ public class Two3PlusTree
             ? prTrash.remove(prTrash.size() - 1).set(key, value)
                 : new KVPair(key, value);
 
-        if (size == 0)
+        if (this.root == null)
             this.root = ((!lfTrash.isEmpty())
                 ? lfTrash.remove(lfTrash.size() - 1).compSet(pair, null)
                     : new Leaf(pair));
@@ -240,7 +228,6 @@ public class Two3PlusTree
                 }
             }
         }
-        size++;
         return true;
     }
 
@@ -250,7 +237,7 @@ public class Two3PlusTree
     {
         Internal inRoot;
         Leaf loc;
-        if (size == 0)
+        if (this.root == null)
             return false;
 
         // if there is only one Leaf in the tree (and it is the root of the
@@ -272,6 +259,7 @@ public class Two3PlusTree
             {
                 prTrash.add(root.left());
                 lfTrash.add((Leaf)root);
+                this.root = null;
             }
         }
         else if (root instanceof Internal)
@@ -316,7 +304,6 @@ public class Two3PlusTree
                     delUpdate(inRoot, loc.left());
             }
         }
-        size--;
         return true;
     }
 
@@ -368,6 +355,7 @@ public class Two3PlusTree
                 parent.setLow(parent.mid());
                 parent.setMid(parent.high());
                 parent.compSet(parent.mid().left(), null);
+                parent.setHigh(null);
 
                 promote(this.root, parent, null, parent.low().left());
             }
@@ -405,6 +393,7 @@ public class Two3PlusTree
                     parent.setMid(((Leaf)parent.low()).link(
                         (Leaf)parent.high()));
                     parent.compSet(parent.mid().left(), null);
+                    parent.setHigh(null);
                 }
             }
             else
@@ -453,7 +442,7 @@ public class Two3PlusTree
             {
                 // if the right KVPair of root is null, then pointers are
                 // adjusted to accommodate the insertion of the split Node
-                if (!inRoot.isFull())
+                if (!inRoot.isFull() && split != null)
                 {
                     inRoot.setHigh(inRoot.mid());
                     inRoot.setMid(split);
@@ -507,7 +496,7 @@ public class Two3PlusTree
             {
                 // if root is not full, then pointers are adjusted to
                 // accommodate the insertion of the split Node
-                if (!inRoot.isFull())
+                if (!inRoot.isFull() && split != null)
                 {
                     inRoot.setHigh(split);
                     inRoot.compSet(inRoot.left(), promo);
