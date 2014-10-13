@@ -231,8 +231,8 @@ public class Two3PlusTree
                         ? pair : root.left()), null);
 
                     // Leaf pointers are updated
-                    split.setNext(((Leaf)root).next());
-                    ((Leaf)root).setNext(split);
+                    split.link(((Leaf)root).next());
+                    ((Leaf)root).link(split);
 
                     // splitting Leaves requires new parents, so the proper
                     // values are promoted using a helper method

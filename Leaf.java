@@ -88,8 +88,9 @@ public class Leaf
     @SuppressWarnings("hiding")
     public Leaf link(Leaf next)
     {
+        if (next != null)
+            next.setPrevious(this);
         setNext(next);
-        next.setPrevious(this);
         return next;
     }
 }
