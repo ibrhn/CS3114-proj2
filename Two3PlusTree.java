@@ -90,15 +90,29 @@ public class Two3PlusTree
         if (key == null || (leaf = find(root, key)) == null)
             return list;
 
-        while ( leaf != null
-            && ((pair = leaf.left()).key().equals(key) || (leaf.right() != null && leaf
-                .right().key().equals(key))))
-        {
+        if (leaf != null)
             pair = (leaf.left().key().equals(key)) ? leaf.left() : leaf.right();
+        else
+            return list;
 
+        while ( leaf != null && (pair.key().equals(key)))
+        {
             list.add(pair);
+
             delete(pair.key(), pair.value());
+            delete(pair.value(), pair.key());
+
+            if (pair != leaf.right() && leaf.right() != null && leaf.right().key().equals(key)) {
+                pair = leaf.right();
+
+                delete(pair.key(), pair.value());
+                delete(pair.value(), pair.key());
+            }
+
             leaf = leaf.next();
+
+            if (leaf != null)
+                pair = (leaf.left().key().equals(key)) ? leaf.left() : leaf.right();
         }
 
         return list;

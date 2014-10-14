@@ -210,7 +210,8 @@ public class Controller
                             + info[1] + "|) is deleted from the tree.");
                         System.out.println("The KVPair (|" + info[1] + "|,|"
                             + info[0] + "|) is deleted from the tree.");
-                        System.out.println(artists.getHandle(info[0]));
+
+//                        System.out.println(artists.getHandle(info[0]));
 
                         if (tree.search(artists.getHandle(info[0])) == null)
                         {
@@ -233,7 +234,7 @@ public class Controller
                     switch (info[0] = info[0].trim())
                     {
                         case "artist":
-                            if ((list = tree.remove(artists.getHandle(info[0])))
+                            if ((list = tree.remove(artists.getHandle(info[1])))
                                 .size() != 0)
                             {
                                 for (int i = 0; i < list.size(); i++)
@@ -242,23 +243,22 @@ public class Controller
                                         + "|,|"
                                         + pool.getString(list.get(i).value())
                                         + "|) is deleted from the tree.");
+
+                                list.clear();
+
+                                artists.remove(info[1] = info[1].trim());
+                                System.out.println("|" + info[1]
+                                    + "| is deleted from the artist database.");
                             }
                             else
                             {
-                                System.out.println("|" + info[0] + "| does not exist in the artist database.");
+                                System.out.println("|" + info[1] + "| does not exist in the artist database.");
                             }
 
                             // if artist removal is successful (or, the artist
                             // does actually exists in the memory pool and was
                             // removed)
-                            if (artists.remove(info[1] = info[1].trim()))
-                                System.out.println("|" + info[1]
-                                    + "| is deleted from the artist database.");
 
-                            else
-                                System.out.println("|" + info[1]
-                                    + "| does not exist in the artist "
-                                    + "database.");
                             break;
                         case "song":
 
@@ -271,6 +271,11 @@ public class Controller
                                         + "|,|"
                                         + pool.getString(list.get(i).value())
                                         + "|) is deleted from the tree.");
+                                list.clear();
+
+                                songs.remove(info[1] = info[1].trim());
+                                System.out.println("|" + info[1]
+                                    + "| is removed from the song database.");
                             }
                             else
                             {
@@ -279,13 +284,8 @@ public class Controller
                             // if song removal is successful (or, the song does
                             // actually exists in the memory pool and was
                             // removed)
-                            if (songs.remove(info[1] = info[1].trim()))
-                                System.out.println("|" + info[1]
-                                    + "| is removed from the song database.");
 
-                            else
-                                System.out.println("|" + info[1]
-                                    + "| does not exist in the song database.");
+
                             break;
                         default:
                             break;
