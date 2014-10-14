@@ -130,9 +130,11 @@ public class Controller
                             + "| duplicates a record already in the song "
                             + "database.");
 
-                    if (tree.insert(artist = artists.getHandle(info[0]),
-                        song = songs.getHandle(info[1]))
-                            && tree.insert(song, artist))
+                    artist = artists.getHandle(info[0]);
+                    song = songs.getHandle(info[1]);
+                    if ((artist != null && song != null
+                        && tree.insert(artist, song)
+                            && tree.insert(song, artist)))
                     {
                         System.out.println("The KVPair (|" + info[0] + "|,|"
                             + info[1] + "|),(" + artist.get() + "," + song.get()
@@ -189,11 +191,9 @@ public class Controller
                         && tree.delete(song, artist))
                     {
                         System.out.println("The KVPair (|" + info[0] + "|,|"
-                            + info[1] + "|),(" + artist.get() + "," + song.get()
-                            + ") is deleted from the tree.");
+                            + info[1] + "|) is deleted from the tree.");
                         System.out.println("The KVPair (|" + info[1] + "|,|"
-                            + info[0] + "|),(" + song.get() + "," + artist.get()
-                            + ") is deleted from the tree.");
+                            + info[0] + "|) is deleted from the tree.");
 
                         if (tree.list(artist).equals(""))
                             artists.remove(info[0]);

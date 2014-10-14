@@ -549,15 +549,13 @@ public class Two3PlusTreeTest
     /**
      * Tests the remove method.
      */
-    public void testRemove() {
-
+    public void testRemove()
+    {
         tree.insert(new Handle(1), new Handle(8));
         tree.insert(new Handle(1), new Handle(16));
         tree.insert(new Handle(1), new Handle(32));
         tree.insert(new Handle(1), new Handle(24));
         tree.insert(new Handle(1), new Handle(40));
-
-
         tree.insert(new Handle(1), new Handle(4));
         tree.insert(new Handle(1), new Handle(5));
         tree.insert(new Handle(1), new Handle(27));
