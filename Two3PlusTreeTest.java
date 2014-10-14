@@ -544,4 +544,46 @@ public class Two3PlusTreeTest
         assertTrue(tree.delete(new Handle(1), new Handle(4)));
         assertEquals("Printing 2-3 tree:\n", tree.print());
     }
+
+    // ----------------------------------------------------------
+    /**
+     * Tests the remove method.
+     */
+    public void testRemove() {
+
+        tree.insert(new Handle(1), new Handle(8));
+        tree.insert(new Handle(1), new Handle(16));
+        tree.insert(new Handle(1), new Handle(32));
+        tree.insert(new Handle(1), new Handle(24));
+        tree.insert(new Handle(1), new Handle(40));
+
+
+        tree.insert(new Handle(1), new Handle(4));
+        tree.insert(new Handle(1), new Handle(5));
+        tree.insert(new Handle(1), new Handle(27));
+        tree.insert(new Handle(1), new Handle(28));
+        tree.insert(new Handle(1), new Handle(12));
+        tree.insert(new Handle(1), new Handle(25));
+        tree.insert(new Handle(1), new Handle(26));
+        assertEquals("Printing 2-3 tree:\n"
+            + "1 24\n"
+            + "  1 8\n"
+            + "    1 5\n"
+            + "      1 4\n"
+            + "      1 5\n"
+            + "    1 16\n"
+            + "      1 8 1 12\n"
+            + "      1 16\n"
+            + "  1 27\n"
+            + "    1 25\n"
+            + "      1 24\n"
+            + "      1 25 1 26\n"
+            + "    1 32\n"
+            + "      1 27 1 28\n"
+            + "      1 32 1 40\n", tree.print());
+
+        tree.remove(new Handle(1));
+        assertEquals("Printing 2-3 tree:\n", tree.print());
+    }
+
 }

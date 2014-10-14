@@ -183,10 +183,24 @@ public class Hashtable
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * @param key String to be searched
+     * @return the Handle in the HashTable corresponding to key
+     * @throws Exception
+     */
+    public Handle getHandle(String key) throws Exception
+    {
+        int pos;
+        return ((pos = getPos(key)) != -1)
+            ? map[pos] : null;
+    }
+
+
     private int findPos(String key)
         throws Exception
     {
-        int start = (int) hash(key);
+        int start = (int)hash(key);
         int pos = start;
         int tmbstn = -1;
 
@@ -219,7 +233,7 @@ public class Hashtable
     private int getPos(String key)
         throws Exception
     {
-        int start = (int) hash(key);
+        int start = (int)hash(key);
         int pos = start;
 
         // quadratically probes after the initial hash position to locate a

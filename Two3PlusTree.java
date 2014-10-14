@@ -65,6 +65,32 @@ public class Two3PlusTree
     }
 
 
+ // ----------------------------------------------------------
+    /**
+     * Place a description of your method here.
+     * @param loc
+     * @return true if it was found
+     *         false otherwise
+     */
+    public boolean remove(Handle loc) {
+
+        Leaf lf;
+        KVPair pair;
+        if ((lf = find(root, loc)) == null)
+            return false;
+
+        while (lf != null && (lf.left().key().compareTo(loc) == 0
+            || lf.right().key().compareTo(loc) == 0))
+        {
+            pair = (lf.left().key().compareTo(loc) == 0)
+                ? lf.left() : lf.right();
+            recDelete(root, pair);
+            lf = lf.next();
+        }
+        return true;
+    }
+
+
     // ----------------------------------------------------------
     /**
      * @param key the key of the KVPairs to append
@@ -787,6 +813,7 @@ public class Two3PlusTree
             {
 //                prTrash.add(rem);
 //                lfTrash.add((Leaf)subRoot.low());
+                ((Leaf)subRoot.low()).previous().link((Leaf)subRoot.mid());
                 return subRoot.mid();
             }
             subRoot.compSet(subRoot.left(), subRoot.mid().left());
@@ -803,6 +830,7 @@ public class Two3PlusTree
             {
 //                prTrash.add(rem);
 //                lfTrash.add((Leaf)subRoot.mid());
+                ((Leaf)subRoot.low()).link(((Leaf)subRoot.mid()).next());
                 return subRoot.low();
             }
             subRoot.compSet(subRoot.low().left(), subRoot.left());
