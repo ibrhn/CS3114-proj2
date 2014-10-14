@@ -21,6 +21,7 @@ public class Two3PlusTree
     /**
      * Initializes the Two3PlusTree (2-3+ tree) with a size = 0, and initializes
      * trash DoublyLinkedLists for KVPairs, Internal Nodes, and Leaf Nodes.
+     *
      * @param ctrl
      *            Controller that manages the Hashtable and MemPool
      */
@@ -37,8 +38,11 @@ public class Two3PlusTree
     /**
      * Calls the helper method recInsert with root as the starting point, to
      * insert a KVPair with the corresponding key and value
-     * @param key key for KVPair to be inserted
-     * @param value value for KVPair to be inserted
+     *
+     * @param key
+     *            key for KVPair to be inserted
+     * @param value
+     *            value for KVPair to be inserted
      * @return if a KVPair corresponding to key and value was inserted
      *         successfully (if there are no duplicates)
      */
@@ -48,76 +52,90 @@ public class Two3PlusTree
     }
 
 
- // ----------------------------------------------------------
+    // ----------------------------------------------------------
     /**
      * Calls the helper method recDelete with root as the starting point, to
      * delete a KVPair with the corresponding key and value
-     * @param key key of KVPair to be deleted
-     * @param value value of KVPair to be deleted
+     *
+     * @param key
+     *            key of KVPair to be deleted
+     * @param value
+     *            value of KVPair to be deleted
      * @return if a KVPair corresponding to key and value was deleted
      *         successfully (if a corresponding KVPair is in the tree)
      */
     public boolean delete(Handle key, Handle value)
     {
-        return recDelete(root, (!prTrash.isEmpty())
-            ? prTrash.remove(prTrash.size() - 1).set(key, value)
-                : new KVPair(key, value));
-    }
-
-
- // ----------------------------------------------------------
-    /**
-     * Place a description of your method here.
-     * @param loc
-     * @return true if it was found
-     *         false otherwise
-     */
-    public boolean remove(Handle loc) {
-
-        Leaf lf;
-        KVPair pair;
-        if ((lf = find(root, loc)) == null)
-            return false;
-
-        while (lf != null && (lf.left().key().compareTo(loc) == 0
-            || lf.right().key().compareTo(loc) == 0))
-        {
-            pair = (lf.left().key().compareTo(loc) == 0)
-                ? lf.left() : lf.right();
-            recDelete(root, pair);
-            lf = lf.next();
-        }
-        return true;
+        return recDelete(
+            root,
+            (!prTrash.isEmpty()) ? prTrash.remove(prTrash.size() - 1).set(
+                key,
+                value) : new KVPair(key, value));
     }
 
 
     // ----------------------------------------------------------
     /**
-     * @param key the key of the KVPairs to append
+     * Place a description of your method here.
+     *
+     * @param key
+     * @return true if it was found false otherwise
+     */
+    public ArrayList<KVPair> remove(Handle key)
+    {
+
+        ArrayList<KVPair> list = new ArrayList<KVPair>();
+        Leaf leaf;
+        KVPair pair;
+        if (key == null || (leaf = find(root, key)) == null)
+            return list;
+
+        while ( leaf != null
+            && ((pair = leaf.left()).key().equals(key) || (leaf.right() != null && leaf
+                .right().key().equals(key))))
+        {
+            pair = (leaf.left().key().equals(key)) ? leaf.left() : leaf.right();
+
+            list.add(pair);
+            delete(pair.key(), pair.value());
+            leaf = leaf.next();
+        }
+
+        return list;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @param key
+     *            the key of the KVPairs to append
      * @return a String representation of a list of all KVPairs with key
      * @throws Exception
      */
-    public String list(Handle key) throws Exception
+    public String list(Handle key)
+        throws Exception
     {
         String list = "";
         Leaf leaf;
         if ((leaf = search(key)) != null)
         {
             KVPair pos;
-            do
+            while ((leaf = leaf.next()) != null
+                && (pos = leaf.left()).key().equals(key))
             {
-                pos = (leaf.left().key().equals(key)) ? leaf.left()
-                    : leaf.right();
+                pos =
+                    (leaf.left().key().equals(key)) ? leaf.left() : leaf
+                        .right();
                 list += "|" + ctrl.pool().getString(pos.value()) + "|\n";
 
                 if (pos != leaf.right() && leaf.isFull()
                     && leaf.right().key().equals(key))
                 {
-                    list += "|" + ctrl.pool().getString(leaf.right().value())
-                        + "|\n";
+                    list +=
+                        "|" + ctrl.pool().getString(leaf.right().value())
+                            + "|\n";
                 }
-            } while ((leaf = leaf.next()) != null
-                && (pos = leaf.left()).key().equals(key));
+            }
         }
         return list;
     }
@@ -127,7 +145,9 @@ public class Two3PlusTree
     /**
      * Calls the helper method find with root as the starting point, to locate a
      * Leaf with the lowest KVPair containing key
-     * @param key key of lowest KVPair to be located
+     *
+     * @param key
+     *            key of lowest KVPair to be located
      * @return the Leaf that contains the lowest KVPair with key (null, if not
      *         found)
      */
@@ -161,7 +181,7 @@ public class Two3PlusTree
                 // root.right().key()
                 else if (!subRoot.isFull()
                     || key.compareTo(subRoot.right().key()) == -1)
-                        return find(((Internal)subRoot).mid(), key);
+                    return find(((Internal)subRoot).mid(), key);
                 // if key is greater than or equal to root.right().key()
                 else
                     return find(((Internal)subRoot).high(), key);
@@ -170,7 +190,7 @@ public class Two3PlusTree
             {
                 // if root contains the lowest KVPair with key
                 if (subRoot.left().key().equals(key)
-                || (subRoot.isFull() && subRoot.right().key().equals(key)))
+                    || (subRoot.isFull() && subRoot.right().key().equals(key)))
                     return (Leaf)subRoot;
 
                 // if root.next() contains the lowest KVPair with key
@@ -178,7 +198,7 @@ public class Two3PlusTree
                     && ((Leaf)subRoot).next().left().key().equals(key)
                     || ((Leaf)subRoot).isFull()
                     && ((Leaf)subRoot).right().key().equals(key))
-                        return ((Leaf)subRoot).next();
+                    return ((Leaf)subRoot).next();
             }
         }
         return null;
@@ -187,14 +207,15 @@ public class Two3PlusTree
 
     private boolean recInsert(TreeNode subRoot, Handle key, Handle value)
     {
-        KVPair pair = (!prTrash.isEmpty())
-            ? prTrash.remove(prTrash.size() - 1).set(key, value)
-                : new KVPair(key, value);
+        KVPair pair =
+            (!prTrash.isEmpty()) ? prTrash.remove(prTrash.size() - 1).set(
+                key,
+                value) : new KVPair(key, value);
 
         if (root == null)
-            root = ((!lfTrash.isEmpty())
-                ? lfTrash.remove(lfTrash.size() - 1).compSet(pair, null)
-                    : new Leaf(pair));
+            root =
+                ((!lfTrash.isEmpty()) ? lfTrash.remove(lfTrash.size() - 1)
+                    .compSet(pair, null) : new Leaf(pair));
 
         // if root contains a KVPair equal to pair, that means there is a
         // duplicate, and the method returns false
@@ -210,7 +231,7 @@ public class Two3PlusTree
                     recInsert(((Internal)subRoot).low(), key, value);
                 else if (!((Internal)subRoot).isFull()
                     || pair.compareTo(((Internal)subRoot).right()) == -1)
-                        recInsert(((Internal)subRoot).mid(), key, value);
+                    recInsert(((Internal)subRoot).mid(), key, value);
                 else
                     recInsert(((Internal)subRoot).high(), key, value);
             }
@@ -231,16 +252,22 @@ public class Two3PlusTree
                     // the split Leaf will acquire root.right() by default, and
                     // it must also acquire the maximum of pair and root.left(),
                     // and the minimum will be in root
-                    KVPair move = (subRoot.left().compareTo(pair) == 1)
-                        ? subRoot.left() : pair;
+                    KVPair move =
+                        (subRoot.left().compareTo(pair) == 1)
+                            ? subRoot.left()
+                            : pair;
 
-                    Leaf split = ((!lfTrash.isEmpty())
-                        ? (Leaf)lfTrash.remove(lfTrash.size() - 1).compSet(move,
-                            subRoot.right()) : new Leaf(move, subRoot.right()));
+                    Leaf split =
+                        ((!lfTrash.isEmpty())
+                            ? (Leaf)lfTrash.remove(lfTrash.size() - 1).compSet(
+                                move,
+                                subRoot.right())
+                            : new Leaf(move, subRoot.right()));
 
                     // root.left() is set to the minimum of root.left() and pair
                     subRoot.compSet(((subRoot.left().compareTo(pair) == 1)
-                        ? pair : subRoot.left()), null);
+                        ? pair
+                        : subRoot.left()), null);
 
                     // Leaf pointers are updated
                     split.link(((Leaf)subRoot).next());
@@ -275,7 +302,7 @@ public class Two3PlusTree
                 if (subRoot.left().equals(pair))
                     subRoot.compSet(subRoot.right(), null);
                 else
-                //prTrash.add(subRoot.right());
+                    // prTrash.add(subRoot.right());
                     subRoot.setRight(null);
             }
 
@@ -283,8 +310,8 @@ public class Two3PlusTree
             // and the size of the tree is 0
             else
             {
-                //prTrash.add(subRoot.left());
-                //lfTrash.add((Leaf)subRoot);
+                // prTrash.add(subRoot.left());
+                // lfTrash.add((Leaf)subRoot);
                 root = null;
             }
         }
@@ -298,7 +325,7 @@ public class Two3PlusTree
                     recDelete(inRoot.low(), pair);
                 else if (!inRoot.isFull()
                     || pair.compareTo(inRoot.right()) == -1)
-                        recDelete(inRoot.mid(), pair);
+                    recDelete(inRoot.mid(), pair);
                 else
                     recDelete(inRoot.high(), pair);
             }
@@ -320,7 +347,7 @@ public class Two3PlusTree
                     return false;
                 else if (loc.isFull() && loc.right().equals(pair))
                 {
-                    //prTrash.add(loc.right());
+                    // prTrash.add(loc.right());
                     loc.setRight(null);
                 }
                 else
@@ -373,10 +400,11 @@ public class Two3PlusTree
             // be deleted and pointers readjusted
             else if (parent.isFull())
             {
-                ((Leaf)parent.low()).previous().link((Leaf)parent.mid());
+                if (((Leaf)parent.low()).previous() != null)
+                    ((Leaf)parent.low()).previous().link((Leaf)parent.mid());
 
-//                prTrash.add(parent.low().left());
-//                lfTrash.add((Leaf)parent.low());
+// prTrash.add(parent.low().left());
+// lfTrash.add((Leaf)parent.low());
 
                 parent.setLow(parent.mid());
                 parent.setMid(parent.high());
@@ -406,18 +434,16 @@ public class Two3PlusTree
                     parent.mid().setLeft(parent.high().left());
                     parent.high().compSet(parent.high().right(), null);
 
-                    parent.compSet(parent.mid().left(),
-                        parent.high().left());
+                    parent.compSet(parent.mid().left(), parent.high().left());
                 }
                 else
                 {
                     ((Leaf)parent.low()).link((Leaf)parent.high());
+                    // ((Leaf)parent.low()).link((Leaf)parent.high());
+// prTrash.add(parent.mid().left());
+// lfTrash.add((Leaf)parent.mid());
 
-//                    prTrash.add(parent.mid().left());
-//                    lfTrash.add((Leaf)parent.mid());
-
-                    parent.setMid(((Leaf)parent.low()).link(
-                        (Leaf)parent.high()));
+                    parent.setMid(parent.high());
                     parent.setLeft(parent.mid().left());
                     parent.setHigh(null);
                 }
@@ -436,15 +462,18 @@ public class Two3PlusTree
             {
                 ((Leaf)parent.mid()).link(((Leaf)parent.high()).next());
 
-//                prTrash.add(parent.high().left());
-//                lfTrash.add((Leaf)parent.high());
+// prTrash.add(parent.high().left());
+// lfTrash.add((Leaf)parent.high());
                 parent.setHigh(null);
             }
         }
     }
 
 
-    private void promote(TreeNode subRoot, TreeNode original, TreeNode split,
+    private void promote(
+        TreeNode subRoot,
+        TreeNode original,
+        TreeNode split,
         KVPair promo)
     {
         Internal inRoot;
@@ -457,10 +486,12 @@ public class Two3PlusTree
         if (subRoot == original)
         {
             if (split != null)
-                root = ((!inTrash.isEmpty())
-                    ? inTrash.remove(inTrash.size() - 1).set(promo, original,
-                        split)
-                            : new Internal(promo, original, split));
+                root =
+                    ((!inTrash.isEmpty()) ? inTrash.remove(inTrash.size() - 1)
+                        .set(promo, original, split) : new Internal(
+                        promo,
+                        original,
+                        split));
         }
 
         // if the promotion is less than the left KVPair of root, then the
@@ -490,11 +521,15 @@ public class Two3PlusTree
                 // further promotion and promote is called again
                 else
                 {
-                    Internal parent = ((!inTrash.isEmpty())
-                        ? inTrash.remove(inTrash.size() - 1).set(
-                            inRoot.high().left(), inRoot.mid(), inRoot.high())
-                        : new Internal(inRoot.high().left(),
-                            inRoot.mid(), inRoot.high()));
+                    Internal parent =
+                        ((!inTrash.isEmpty()) ? inTrash.remove(
+                            inTrash.size() - 1).set(
+                            inRoot.high().left(),
+                            inRoot.mid(),
+                            inRoot.high()) : new Internal(
+                            inRoot.high().left(),
+                            inRoot.mid(),
+                            inRoot.high()));
 
                     KVPair newPromo = inRoot.left();
                     inRoot.setMid(split);
@@ -515,8 +550,8 @@ public class Two3PlusTree
         // if the promotion is greater than or equal to the left KVPair of root,
         // and either the root is not full, or the promotion is less than the
         // right KVPair of root, then the method checks root.mid()
-        else if (promo.compareTo(inRoot.left()) >= 0 &&
-            (!inRoot.isFull() || promo.compareTo(inRoot.right()) == -1))
+        else if (promo.compareTo(inRoot.left()) >= 0
+            && (!inRoot.isFull() || promo.compareTo(inRoot.right()) == -1))
         {
             if (inRoot.mid() == original)
             {
@@ -540,11 +575,15 @@ public class Two3PlusTree
                 // further promotion and promote is called again
                 else
                 {
-                    Internal parent = ((!inTrash.isEmpty())
-                        ? inTrash.remove(inTrash.size() - 1).set(
-                            inRoot.high().left(), split, inRoot.high())
-                        : new Internal(inRoot.high().left(),
-                            split, inRoot.high()));
+                    Internal parent =
+                        ((!inTrash.isEmpty()) ? inTrash.remove(
+                            inTrash.size() - 1).set(
+                            inRoot.high().left(),
+                            split,
+                            inRoot.high()) : new Internal(
+                            inRoot.high().left(),
+                            split,
+                            inRoot.high()));
 
                     KVPair newPromo = split.left();
                     inRoot.setHigh(null);
@@ -569,16 +608,19 @@ public class Two3PlusTree
             // is called again
             if (inRoot.high() == original)
             {
-             // if split is null, then there needs to be a promotion due
+                // if split is null, then there needs to be a promotion due
                 // to deletion
                 if (split == null)
                     inRoot.setRight(promo);
                 else
                 {
-                    Internal parent = ((!inTrash.isEmpty())
-                        ? inTrash.remove(inTrash.size() - 1).set(promo,
-                            inRoot.high(), split)
-                        : new Internal(promo, inRoot.high(), split));
+                    Internal parent =
+                        ((!inTrash.isEmpty()) ? inTrash.remove(
+                            inTrash.size() - 1)
+                            .set(promo, inRoot.high(), split) : new Internal(
+                            promo,
+                            inRoot.high(),
+                            split));
 
                     KVPair newPromo = inRoot.right();
                     inRoot.setHigh(null);
@@ -606,30 +648,36 @@ public class Two3PlusTree
             {
                 if ((adj = (Internal)subRoot.mid()).isFull())
                 {
-                    (((Leaf)((parent.low() == rem)
-                        ? ((Leaf)parent.low()).previous()
-                            : parent.low()))).link((Leaf)((parent.low() == rem)
-                                ? parent.mid() : adj.low()));
-
-//                    prTrash.add((parent.low() == rem)
-//                        ? parent.low().left() : parent.mid().left());
-//                    lfTrash.add((Leaf)((parent.low() == rem)
-//                        ? parent.low() : parent.mid()));
+// prTrash.add((parent.low() == rem)
+// ? parent.low().left() : parent.mid().left());
+// lfTrash.add((Leaf)((parent.low() == rem)
+// ? parent.low() : parent.mid()));
 
                     if (parent.low() == rem)
                     {
+                        if (((Leaf)parent.low()).previous() != null)
+                            ((Leaf)parent.low()).previous().link(
+                                (Leaf)parent.mid());
                         parent.setLow(parent.mid());
                         promote(root, parent, null, parent.low().left());
+                    }
+                    else
+                    {
+                        ((Leaf)parent.low()).link((Leaf)adj.low());
                     }
                     leftTransfer(parent, adj);
                     subRoot.setLeft(((Internal)subRoot.mid()).low().left());
                 }
                 else if (subRoot.isFull())
                 {
-                    (((Leaf)((parent.low() == rem)
-                        ? ((Leaf)parent.low()).previous()
-                            : parent.low()))).link((Leaf)((parent.low() == rem)
-                                ? parent.mid() : adj.low()));
+                    if (parent.low() == rem)
+                    {
+                        if (((Leaf)parent.low()).previous() != null)
+                            ((Leaf)parent.low()).previous().link(
+                                (Leaf)parent.mid());
+                    }
+                    else
+                        ((Leaf)parent.low()).link((Leaf)adj.low());
 
                     adj.setHigh(adj.mid());
                     adj.setRight(adj.high().left());
@@ -637,21 +685,26 @@ public class Two3PlusTree
                     adj.setMid(adj.low());
                     adj.setLeft(adj.mid().left());
 
-                    adj.setLow((parent.low() == rem)
-                        ? parent.mid() : parent.low());
+                    adj.setLow((parent.low() == rem) ? parent.mid() : parent
+                        .low());
 
-//                    prTrash.add((parent.low() == rem)
-//                        ? parent.low().left() : parent.mid().left());
-//                    lfTrash.add((Leaf)((parent.low() == rem)
-//                        ? parent.low() : parent.mid()));
-//                    inTrash.add(parent);
+// prTrash.add((parent.low() == rem)
+// ? parent.low().left() : parent.mid().left());
+// lfTrash.add((Leaf)((parent.low() == rem)
+// ? parent.low() : parent.mid()));
+// inTrash.add(parent);
 
                     subRoot.setLow(subRoot.mid());
                     subRoot.setMid(subRoot.high());
                     subRoot.setHigh(null);
-                    subRoot.compSet(((Internal)subRoot.mid()).low().left(), null);
+                    subRoot.compSet(
+                        ((Internal)subRoot.mid()).low().left(),
+                        null);
 
-                    promote(root, subRoot.low(), null,
+                    promote(
+                        root,
+                        subRoot.low(),
+                        null,
                         ((Internal)subRoot.low()).low().left());
                 }
                 else
@@ -667,20 +720,26 @@ public class Two3PlusTree
             {
                 if ((adj = (Internal)subRoot.low()).isFull())
                 {
-                    ((Leaf)((parent.mid() == rem)
-                        ? (parent.low())
-                            : adj.high())).link((Leaf)((parent.mid() == rem)
-                                ? ((Leaf)parent.mid()).next() : parent.mid()));
+                    ((Leaf)((parent.mid() == rem) ? (parent.low()) : adj.high()))
+                        .link((Leaf)((parent.mid() == rem) ? ((Leaf)parent
+                            .mid()).next() : parent.mid()));
 
-//                    prTrash.add((parent.mid() == rem)
-//                        ? parent.mid().left() : parent.low().left());
-//                    lfTrash.add((Leaf)((parent.mid() == rem)
-//                        ? parent.mid() : parent.low()));
+// prTrash.add((parent.mid() == rem)
+// ? parent.mid().left() : parent.low().left());
+// lfTrash.add((Leaf)((parent.mid() == rem)
+// ? parent.mid() : parent.low()));
 
                     if (parent.mid() == rem)
                     {
+                        if (((Leaf)parent.mid()).next() != null)
+                            ((Leaf)parent.low()).link(((Leaf)parent.mid())
+                                .next());
                         parent.setMid(parent.low());
                         parent.setLeft(parent.mid().left());
+                    }
+                    else
+                    {
+                        ((Leaf)adj.high()).link((Leaf)parent.mid());
                     }
                     rightTransfer(parent, adj);
                     subRoot.setLeft(((Internal)subRoot.mid()).low().left());
@@ -688,40 +747,49 @@ public class Two3PlusTree
                 else if (subRoot.high() != null
                     && (adj = (Internal)subRoot.high()).isFull())
                 {
-                    (((Leaf)((parent.low() == rem)
-                        ? ((Leaf)parent.low()).previous()
-                            : parent.low()))).link((Leaf)((parent.low() == rem)
-                                ? parent.mid() : adj.low()));
-
-//                    prTrash.add((parent.low() == rem)
-//                        ? parent.low().left() : parent.mid().left());
-//                    lfTrash.add((Leaf)((parent.low() == rem)
-//                        ? parent.low() : parent.mid()));
+// prTrash.add((parent.low() == rem)
+// ? parent.low().left() : parent.mid().left());
+// lfTrash.add((Leaf)((parent.low() == rem)
+// ? parent.low() : parent.mid()));
 
                     if (parent.low() == rem)
                     {
+                        if (((Leaf)parent.low()).previous() != null)
+                            ((Leaf)parent.low()).previous().link(
+                                (Leaf)parent.mid());
                         parent.setLow(parent.mid());
                         subRoot.setLeft(parent.low().left());
                     }
+                    else
+                        ((Leaf)parent.low()).link((Leaf)adj.low());
                     leftTransfer(parent, adj);
                     subRoot.setRight(((Internal)subRoot.high()).low().left());
                 }
                 else if (subRoot.isFull())
                 {
-                    ((Leaf)((parent.low() == rem)
-                        ? ((Leaf)parent.low()).previous()
-                            : parent.low())).link((Leaf)((parent.low() == rem)
-                                ? parent.mid() : ((Leaf)parent.mid()).next()));
+                    if (parent.low() == rem)
+                    {
+                        if (((Leaf)parent.low()).previous() != null)
+                            ((Leaf)parent.low()).previous().link(
+                                (Leaf)parent.mid());
+                    }
+                    else
+                    {
+                        if (((Leaf)parent.mid()).next() != null)
+                            ((Leaf)parent.low()).link(((Leaf)parent.mid())
+                                .next());
+                    }
 
-                    (adj = (Internal)subRoot.low()).setHigh((parent.low() == rem)
-                        ? parent.mid() : parent.low());
+                    (adj = (Internal)subRoot.low())
+                        .setHigh((parent.low() == rem) ? parent.mid() : parent
+                            .low());
                     adj.setRight(adj.high().left());
 
-//                    prTrash.add((parent.low() == rem)
-//                        ? parent.low().left() : parent.mid().left());
-//                    lfTrash.add((Leaf)((parent.low() == rem)
-//                        ? parent.low() : parent.mid()));
-//                    inTrash.add(parent);
+// prTrash.add((parent.low() == rem)
+// ? parent.low().left() : parent.mid().left());
+// lfTrash.add((Leaf)((parent.low() == rem)
+// ? parent.low() : parent.mid()));
+// inTrash.add(parent);
 
                     subRoot.setMid(subRoot.high());
                     subRoot.setLeft(((Internal)subRoot.mid()).low().left());
@@ -742,40 +810,57 @@ public class Two3PlusTree
                 {
                     ((Leaf)((parent.mid() == rem)
                         ? parent.low()
-                            : ((Leaf)parent.low()).previous())).link(
-                                (Leaf)((parent.mid() == rem)
-                                    ? ((Leaf)parent.mid()).next()
-                                        : parent.mid()));
+                        : ((Leaf)parent.low()).previous())).link((Leaf)((parent
+                        .mid() == rem) ? ((Leaf)parent.mid()).next() : parent
+                        .mid()));
 
-//                    prTrash.add((parent.mid() == rem)
-//                        ? parent.mid().left() : parent.low().left());
-//                    lfTrash.add((Leaf)((parent.mid() == rem)
-//                        ? parent.mid() : parent.low()));
+// prTrash.add((parent.mid() == rem)
+// ? parent.mid().left() : parent.low().left());
+// lfTrash.add((Leaf)((parent.mid() == rem)
+// ? parent.mid() : parent.low()));
 
                     if (parent.mid() == rem)
                     {
+                        if (((Leaf)parent.mid()).next() != null)
+                            ((Leaf)parent.low()).link(((Leaf)parent.mid())
+                                .next());
+
                         parent.setMid(parent.low());
                         parent.setLeft(parent.mid().left());
+                    }
+                    else
+                    {
+                        if (((Leaf)parent.low()).previous() != null)
+                            ((Leaf)parent.low()).previous().link(
+                                (Leaf)parent.mid());
                     }
                     rightTransfer(parent, adj);
                     subRoot.setRight(((Internal)subRoot.high()).low().left());
                 }
                 else
                 {
-                    ((Leaf)((parent.low() == rem)
-                        ? ((Leaf)parent.low()).previous()
-                            : parent.low())).link((Leaf)((parent.low() == rem)
-                                ? parent.mid() : ((Leaf)parent.mid()).next()));
+                    if (parent.low() == rem)
+                    {
+                        if (((Leaf)parent.low()).previous() != null)
+                            ((Leaf)parent.low()).previous().link(
+                                (Leaf)parent.mid());
+                    }
+                    else
+                    {
+                        if (((Leaf)parent.mid()).next() != null)
+                            ((Leaf)parent.low()).link(((Leaf)parent.mid())
+                                .next());
+                    }
 
-                    adj.setHigh((parent.low() == rem)
-                        ? parent.mid() : parent.low());
+                    adj.setHigh((parent.low() == rem) ? parent.mid() : parent
+                        .low());
                     adj.setRight(adj.high().left());
 
-//                    prTrash.add((parent.low() == rem)
-//                        ? parent.low().left() : parent.mid().left());
-//                    lfTrash.add((Leaf)((parent.low() == rem)
-//                        ? parent.low() : parent.mid()));
-//                    inTrash.add(parent);
+// prTrash.add((parent.low() == rem)
+// ? parent.low().left() : parent.mid().left());
+// lfTrash.add((Leaf)((parent.low() == rem)
+// ? parent.low() : parent.mid()));
+// inTrash.add(parent);
 
                     subRoot.setHigh(null);
                 }
@@ -811,26 +896,27 @@ public class Two3PlusTree
         {
             if (subRoot.low() instanceof Leaf)
             {
-//                prTrash.add(rem);
-//                lfTrash.add((Leaf)subRoot.low());
-                ((Leaf)subRoot.low()).previous().link((Leaf)subRoot.mid());
+// prTrash.add(rem);
+// lfTrash.add((Leaf)subRoot.low());
+                if (((Leaf)subRoot.low()).previous() != null)
+                    ((Leaf)subRoot.low()).previous().link((Leaf)subRoot.mid());
                 return subRoot.mid();
             }
             subRoot.compSet(subRoot.left(), subRoot.mid().left());
             subRoot.setLow(shrink((Internal)subRoot.low(), rem));
             subRoot.setHigh(((Internal)subRoot.mid()).mid());
             subRoot.setMid(((Internal)subRoot.mid()).low());
-//            inTrash.add(replace);
+// inTrash.add(replace);
         }
         else if (rem.compareTo(subRoot.left()) >= 0
-            && (!subRoot.isFull()
-                || rem.compareTo(subRoot.right()) == -1))
+            && (!subRoot.isFull() || rem.compareTo(subRoot.right()) == -1))
         {
             if (subRoot.mid() instanceof Leaf)
             {
-//                prTrash.add(rem);
-//                lfTrash.add((Leaf)subRoot.mid());
-                ((Leaf)subRoot.low()).link(((Leaf)subRoot.mid()).next());
+// prTrash.add(rem);
+// lfTrash.add((Leaf)subRoot.mid());
+                if (((Leaf)subRoot.mid()).next() != null)
+                    ((Leaf)subRoot.low()).link(((Leaf)subRoot.mid()).next());
                 return subRoot.low();
             }
             subRoot.compSet(subRoot.low().left(), subRoot.left());
@@ -840,12 +926,12 @@ public class Two3PlusTree
 
             if (subRoot.low() instanceof Leaf)
                 subRoot.compSet(subRoot.left(), subRoot.high().left());
-//            inTrash.add(replace);
+// inTrash.add(replace);
         }
         else if (rem.compareTo(subRoot.right()) >= 0)
         {
             subRoot.setHigh(shrink((Internal)subRoot.high(), rem));
-//            inTrash.add(replace);
+// inTrash.add(replace);
         }
         return subRoot;
     }

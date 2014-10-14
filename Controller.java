@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
@@ -12,13 +13,13 @@ import java.io.FileReader;
  */
 public class Controller
 {
-    private Hashtable  artists;
-    private Hashtable  songs;
-    private MemPool    pool;
+    private Hashtable    artists;
+    private Hashtable    songs;
+    private MemPool      pool;
     private Two3PlusTree tree;
 
-    private static int initPoolSz;
-    private static int initHashSz;
+    private static int   initPoolSz;
+    private static int   initHashSz;
 
 
     // ----------------------------------------------------------
@@ -81,10 +82,12 @@ public class Controller
 
                     int prePoolSz = pool.capacity();
                     int preArtistSz = artists.capacity();
+                    boolean checkArtist;
+                    boolean checkSong;
 
                     // if artist insertion is successful (or, the artist does
                     // not duplicate an artist already in the memory pool)
-                    if (artists.put(info[0] = info[0].trim()))
+                    if ((checkArtist = artists.put(info[0] = info[0].trim())) == true)
                     {
                         if (preArtistSz < artists.capacity())
                             System.out
@@ -110,7 +113,8 @@ public class Controller
 
                     // if song insertion is successful (or, the song does not
                     // duplicate a song already in the memory pool
-                    if (songs.put(info[1] = info[1].trim()))
+
+                    if ((checkSong = songs.put(info[1] = info[1].trim())) == true)
                     {
                         if (preSongSz < songs.capacity())
                             System.out.println("Song hash table size doubled.");
@@ -130,26 +134,36 @@ public class Controller
                             + "| duplicates a record already in the song "
                             + "database.");
 
-                    artist = artists.getHandle(info[0]);
-                    song = songs.getHandle(info[1]);
-                    if ((artist != null && song != null
-                        && tree.insert(artist, song)
-                            && tree.insert(song, artist)))
+                    if (checkSong)
                     {
+                        tree.insert(
+                            songs.getHandle(info[1]),
+                            artists.getHandle(info[0]));
                         System.out.println("The KVPair (|" + info[0] + "|,|"
-                            + info[1] + "|),(" + artist.get() + "," + song.get()
-                            + ") is added to the tree.");
-                        System.out.println("The KVPair (|" + info[1] + "|,|"
-                            + info[0] + "|),(" + song.get() + "," + artist.get()
+                            + info[1] + "|),(" + artists.getHandle(info[0])
+                            + "," + songs.getHandle(info[1])
                             + ") is added to the tree.");
                     }
+                    if (checkArtist)
+                    {
+                        tree.insert(
+                            artists.getHandle(info[0]),
+                            songs.getHandle(info[1]));
+                        System.out.println("The KVPair (|" + info[1] + "|,|"
+                            + info[0] + "|),(" + songs.getHandle(info[1]) + ","
+                            + artists.getHandle(info[0])
+                            + ") is added to the tree.");
+                    }
+
                     else
                     {
                         System.out.println("The KVPair (|" + info[0] + "|,|"
-                            + info[1] + "|),(" + artist.get() + "," + song.get()
+                            + info[1] + "|),(" + artists.getHandle(info[0])
+                            + "," + songs.getHandle(info[1])
                             + ") duplicates a record already in the tree.");
                         System.out.println("The KVPair (|" + info[1] + "|,|"
-                            + info[0] + "|),(" + song.get() + "," + artist.get()
+                            + info[0] + "|),(" + songs.getHandle(info[1]) + ","
+                            + artists.getHandle(info[0])
                             + ") duplicates a record already in the tree.");
                     }
                     break;
@@ -162,14 +176,16 @@ public class Controller
                             if ((artist = artists.getHandle(info[1])) != null)
                                 System.out.println(tree.list(artist));
                             else
-                                System.out.println("|" + info[1] + "| does not "
+                                System.out.println("|" + info[1]
+                                    + "| does not "
                                     + "exist in the artist database.");
                             break;
                         case "song":
                             if ((song = songs.getHandle(info[1])) != null)
                                 System.out.println(tree.list(song));
                             else
-                                System.out.println("|" + info[1] + "| does not "
+                                System.out.println("|" + info[1]
+                                    + "| does not "
                                     + "exist in the song database.");
                             break;
                     }
@@ -194,26 +210,50 @@ public class Controller
                             + info[1] + "|) is deleted from the tree.");
                         System.out.println("The KVPair (|" + info[1] + "|,|"
                             + info[0] + "|) is deleted from the tree.");
+                        System.out.println(artists.getHandle(info[0]));
 
-                        if (tree.list(artist).equals(""))
+                        if (tree.search(artists.getHandle(info[0])) == null)
+                        {
                             artists.remove(info[0]);
-                        if (tree.list(song).equals(""))
+                            System.out.println("|" + info[0]
+                                + "| is deleted from the artist database.");
+                        }
+                        if (tree.search(songs.getHandle(info[1])) == null)
+                        {
                             songs.remove(info[1]);
+                            System.out.println("|" + info[1]
+                                + "| is deleted from the song database.");
+                        }
                     }
                     break;
 
                 case "remove":
                     info = command[1].split(" ", 2);
-
+                    ArrayList<KVPair> list;
                     switch (info[0] = info[0].trim())
                     {
                         case "artist":
+                            if ((list = tree.remove(artists.getHandle(info[0])))
+                                .size() != 0)
+                            {
+                                for (int i = 0; i < list.size(); i++)
+                                    System.out.println("The KVPair (|"
+                                        + pool.getString(list.get(i).key())
+                                        + "|,|"
+                                        + pool.getString(list.get(i).value())
+                                        + "|) is deleted from the tree.");
+                            }
+                            else
+                            {
+                                System.out.println("|" + info[0] + "| does not exist in the artist database.");
+                            }
+
                             // if artist removal is successful (or, the artist
                             // does actually exists in the memory pool and was
                             // removed)
                             if (artists.remove(info[1] = info[1].trim()))
                                 System.out.println("|" + info[1]
-                                    + "| is removed from the artist database.");
+                                    + "| is deleted from the artist database.");
 
                             else
                                 System.out.println("|" + info[1]
@@ -221,6 +261,21 @@ public class Controller
                                     + "database.");
                             break;
                         case "song":
+
+                            if ((list = tree.remove(songs.getHandle(info[1])))
+                                .size() != 0)
+                            {
+                                for (int i = 0; i < list.size(); i++)
+                                    System.out.println("The KVPair (|"
+                                        + pool.getString(list.get(i).key())
+                                        + "|,|"
+                                        + pool.getString(list.get(i).value())
+                                        + "|) is deleted from the tree.");
+                            }
+                            else
+                            {
+                                System.out.println("|" + info[1] + "| does not exist in the song database.");
+                            }
                             // if song removal is successful (or, the song does
                             // actually exists in the memory pool and was
                             // removed)
@@ -252,7 +307,7 @@ public class Controller
                             System.out.println(pool.dump());
                             break;
                         case "tree":
-                            System.out.println(tree.print());
+                            System.out.print(tree.print());
                             break;
                         default:
                             break;
@@ -265,6 +320,7 @@ public class Controller
         }
         in.close();
     }
+
 
 
     // ----------------------------------------------------------
