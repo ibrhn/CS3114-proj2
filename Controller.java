@@ -15,6 +15,7 @@ public class Controller
     private Hashtable  artists;
     private Hashtable  songs;
     private MemPool    pool;
+    private Two3PlusTree tree;
 
     private static int initPoolSz;
     private static int initHashSz;
@@ -36,6 +37,7 @@ public class Controller
         initHashSz = hashSz;
         artists = new Hashtable(this);
         songs = new Hashtable(this);
+        tree = new Two3PlusTree(this);
     }
 
 

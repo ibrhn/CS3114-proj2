@@ -65,19 +65,16 @@ public class Internal
      * Overloads the set method in the TreeNode class with pointers to low and
      * mid, and returns this.
      * @param left new left KVPair
-     * @param right new right KVPair
      * @param low new low TreeNode
      * @param mid new mid TreeNode
      * @return this
      */
-    public Internal set(KVPair left, KVPair right, TreeNode low, TreeNode mid)
+    public Internal set(KVPair left, TreeNode low, TreeNode mid)
     {
         setLeft(left);
-        setRight(right);
-
         setLow(low);
         setMid(mid);
-
+        setHigh(null);
         return this;
     }
 

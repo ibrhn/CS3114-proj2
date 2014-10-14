@@ -81,8 +81,8 @@ public class TreeNodeTest
         TreeNode mid = new Leaf(new KVPair(new Handle(1), new Handle(2)));
         TreeNode high = new Leaf(new KVPair(new Handle(2), new Handle(3)));
 
-        internal.set(new KVPair(new Handle(3), new Handle(4)),
-            new KVPair(new Handle(4), new Handle(5)), low, mid);
+        internal.set(new KVPair(new Handle(3), new Handle(4)), low, mid);
+        internal.setRight(new KVPair(new Handle(4), new Handle(5)));
         internal.setHigh(high);
 
         assertEquals(low, internal.low());
