@@ -134,27 +134,23 @@ public class Controller
                             + "| duplicates a record already in the song "
                             + "database.");
 
-                    if (checkSong)
+                    if (tree.insert(
+                        songs.getHandle(info[1]),
+                        artists.getHandle(info[0]))
+                        && tree.insert(
+                            artists.getHandle(info[0]),
+                            songs.getHandle(info[1])))
                     {
-                        tree.insert(
-                            songs.getHandle(info[1]),
-                            artists.getHandle(info[0]));
                         System.out.println("The KVPair (|" + info[0] + "|,|"
                             + info[1] + "|),(" + artists.getHandle(info[0])
                             + "," + songs.getHandle(info[1])
                             + ") is added to the tree.");
-                    }
-                    if (checkArtist)
-                    {
-                        tree.insert(
-                            artists.getHandle(info[0]),
-                            songs.getHandle(info[1]));
+
                         System.out.println("The KVPair (|" + info[1] + "|,|"
                             + info[0] + "|),(" + songs.getHandle(info[1]) + ","
                             + artists.getHandle(info[0])
                             + ") is added to the tree.");
                     }
-
                     else
                     {
                         System.out.println("The KVPair (|" + info[0] + "|,|"
@@ -238,17 +234,37 @@ public class Controller
                                 .size() != 0)
                             {
                                 for (int i = 0; i < list.size(); i++)
+                                {
                                     System.out.println("The KVPair (|"
                                         + pool.getString(list.get(i).key())
                                         + "|,|"
                                         + pool.getString(list.get(i).value())
                                         + "|) is deleted from the tree.");
-
-                                list.clear();
+                                    System.out.println("The KVPair (|"
+                                        + pool.getString(list.get(i).value())
+                                        + "|,|"
+                                        + pool.getString(list.get(i).key())
+                                        + "|) is deleted from the tree.");
+                                }
 
                                 artists.remove(info[1] = info[1].trim());
                                 System.out.println("|" + info[1]
                                     + "| is deleted from the artist database.");
+
+                                for (int i = 0; i < list.size(); i++)
+                                {
+                                    if (tree.search(list.get(i).value()) == null)
+                                    {
+                                        String sng = pool.getString(list.get(i).value());
+                                        if (sng != null)
+                                        {
+                                            songs.remove(sng);
+                                            System.out.println("|" + sng
+                                                + "| is deleted from the song database.");
+                                        }
+                                    }
+                                }
+                                list.clear();
                             }
                             else
                             {
@@ -266,16 +282,37 @@ public class Controller
                                 .size() != 0)
                             {
                                 for (int i = 0; i < list.size(); i++)
+                                {
                                     System.out.println("The KVPair (|"
                                         + pool.getString(list.get(i).key())
                                         + "|,|"
                                         + pool.getString(list.get(i).value())
                                         + "|) is deleted from the tree.");
-                                list.clear();
+                                    System.out.println("The KVPair (|"
+                                        + pool.getString(list.get(i).value())
+                                        + "|,|"
+                                        + pool.getString(list.get(i).key())
+                                        + "|) is deleted from the tree.");
+                                }
 
                                 songs.remove(info[1] = info[1].trim());
                                 System.out.println("|" + info[1]
                                     + "| is removed from the song database.");
+
+                                for (int i = 0; i < list.size(); i++)
+                                {
+                                    if (tree.search(list.get(i).value()) == null)
+                                    {
+                                        String art = pool.getString(list.get(i).value());
+                                        if (art != null)
+                                        {
+                                            artists.remove(art);
+                                            System.out.println("|" + art
+                                                + "| is deleted from the artist database.");
+                                        }
+                                    }
+                                }
+                                list.clear();
                             }
                             else
                             {

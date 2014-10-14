@@ -191,8 +191,9 @@ public class Hashtable
      */
     public Handle getHandle(String key) throws Exception
     {
-        int pos = getPos(key);
-        return (pos != -1) ? map[pos] : null;
+        int pos;
+        return ((pos = getPos(key)) != -1)
+            ? map[pos] : null;
     }
 
 
