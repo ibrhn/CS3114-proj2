@@ -61,10 +61,12 @@ public class Leaf
     /**
      * Sets the next Leaf.
      * @param next the new next Leaf
+     * @return next
      */
-    public void setNext(Leaf next)
+    public Leaf setNext(Leaf next)
     {
         this.next = next;
+        return next;
     }
 
 
@@ -92,5 +94,17 @@ public class Leaf
             next.setPrevious(this);
         setNext(next);
         return next;
+    }
+
+
+    // -------------------------------------------------------------------------
+    @Override
+    public Leaf split()
+    {
+        Leaf split = new Leaf(ovr(), right());
+
+        setOvr(null);
+        setRight(null);
+        return setNext(split);
     }
 }

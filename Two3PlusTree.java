@@ -10,11 +10,8 @@ import java.util.ArrayList;
  */
 public class Two3PlusTree
 {
-    private Controller          ctrl;
-    private TreeNode            root;
-    private ArrayList<KVPair>   prTrash;
-    private ArrayList<Internal> inTrash;
-    private ArrayList<Leaf>     lfTrash;
+    private Controller ctrl;
+    private TreeNode   root;
 
 
     // ----------------------------------------------------------
@@ -28,9 +25,6 @@ public class Two3PlusTree
     public Two3PlusTree(Controller ctrl)
     {
         this.ctrl = ctrl;
-        prTrash = new ArrayList<KVPair>();
-        inTrash = new ArrayList<Internal>();
-        lfTrash = new ArrayList<Leaf>();
     }
 
 
@@ -48,7 +42,10 @@ public class Two3PlusTree
      */
     public boolean insert(Handle key, Handle value)
     {
-        return recInsert(root, key, value);
+        if (!findExactMatch(this.root,key, value))
+            return recInsert(root, new KVPair(key, value)) != null;
+
+        return false;
     }
 
 
@@ -66,11 +63,7 @@ public class Two3PlusTree
      */
     public boolean delete(Handle key, Handle value)
     {
-        return recDelete(
-            root,
-            (!prTrash.isEmpty()) ? prTrash.remove(prTrash.size() - 1).set(
-                key,
-                value) : new KVPair(key, value));
+        return recDelete(root, new KVPair(key, value));
     }
 
 
@@ -83,36 +76,31 @@ public class Two3PlusTree
      */
     public ArrayList<KVPair> remove(Handle key)
     {
-
         ArrayList<KVPair> list = new ArrayList<KVPair>();
         Leaf leaf;
         KVPair pair;
         if (key == null || (leaf = find(root, key)) == null)
             return list;
-
-        pair = (leaf.left().key().equals(key)) ? leaf.left() : leaf.right();
-
-        while ( leaf != null && pair != null && (pair.key().equals(key)))
+        while (leaf != null
+            && (leaf.left().key().equals(key) || (leaf.right() != null && leaf
+                .right().key().equals(key))))
         {
-            list.add(pair);
-
-            delete(pair.key(), pair.value());
-            delete(pair.value(), pair.key());
-
-            if (pair != leaf.right() && leaf.right() != null && leaf.right().key().equals(key))
+            if (leaf.left().key().equals(key))
             {
-                pair = leaf.right();
-
+                pair = leaf.left();
                 delete(pair.key(), pair.value());
                 delete(pair.value(), pair.key());
+                list.add(pair);
             }
-
+            if (leaf.right() != null && leaf.right().key().equals(key))
+            {
+                pair = leaf.right();
+                delete(pair.key(), pair.value());
+                delete(pair.value(), pair.key());
+                list.add(pair);
+            }
             leaf = leaf.next();
-
-            if (leaf != null)
-                pair = (leaf.left().key().equals(key)) ? leaf.left() : leaf.right();
         }
-
         return list;
     }
 
@@ -217,81 +205,100 @@ public class Two3PlusTree
     }
 
 
-    private boolean recInsert(TreeNode subRoot, Handle key, Handle value)
+    public boolean findExactMatch(TreeNode subRoot, Handle key, Handle value)
     {
-        KVPair pair =
-            (!prTrash.isEmpty()) ? prTrash.remove(prTrash.size() - 1).set(
-                key,
-                value) : new KVPair(key, value);
-
-        if (root == null)
-            root =
-                ((!lfTrash.isEmpty()) ? lfTrash.remove(lfTrash.size() - 1)
-                    .compSet(pair, null) : new Leaf(pair));
-
-        // if root contains a KVPair equal to pair, that means there is a
-        // duplicate, and the method returns false
-        else if (subRoot.containsEqual(pair))
-            return false;
-        else
+        KVPair pair = new KVPair(key, value);
+        if (root != null)
         {
-            // if root is an Internal, then the method will search for the
-            // proper location to insert pair
             if (subRoot instanceof Internal)
             {
-                if (pair.compareTo(((Internal)subRoot).left()) == -1)
-                    recInsert(((Internal)subRoot).low(), key, value);
-                else if (!((Internal)subRoot).isFull()
-                    || pair.compareTo(((Internal)subRoot).right()) == -1)
-                    recInsert(((Internal)subRoot).mid(), key, value);
+                // if key is less than or equal to root.left().key()
+                if (pair.compareTo(subRoot.left()) == -1)
+                    return findExactMatch(((Internal)subRoot).low(), key, value);
+                // if key is greater than or equal to root.left().key(), and
+                // either root is not full or key is less than
+                // root.right().key()
+                else if (!subRoot.isFull()
+                    || pair.compareTo(subRoot.right()) == -1)
+                    return findExactMatch(((Internal)subRoot).mid(), key, value);
+                // if key is greater than or equal to root.right().key()
                 else
-                    recInsert(((Internal)subRoot).high(), key, value);
+                    return findExactMatch(
+                        ((Internal)subRoot).high(),
+                        key,
+                        value);
             }
             else if (subRoot instanceof Leaf)
             {
-                // if the Leaf where the method wants to insert pair is not
-                // full, then it is inserted and sorted
-                if (!subRoot.isFull())
-                    subRoot.compSet(subRoot.left(), pair);
-                else
-                {
-                    // if the Leaf where the method wants to insert is full,
-                    // then it must create a new split Leaf (and update
-                    // pointers accordingly) the split Leaf will contain two
-                    // KVPairs, and root will contain one; the original KVPair
-                    // is less than the ones in the new split Leaf (which
-                    // contains the other two KVPairs, which are ordered)
-                    // the split Leaf will acquire root.right() by default, and
-                    // it must also acquire the maximum of pair and root.left(),
-                    // and the minimum will be in root
-                    KVPair move =
-                        (subRoot.left().compareTo(pair) == 1)
-                            ? subRoot.left()
-                            : pair;
-
-                    Leaf split =
-                        ((!lfTrash.isEmpty())
-                            ? (Leaf)lfTrash.remove(lfTrash.size() - 1).compSet(
-                                move,
-                                subRoot.right())
-                            : new Leaf(move, subRoot.right()));
-
-                    // root.left() is set to the minimum of root.left() and pair
-                    subRoot.compSet(((subRoot.left().compareTo(pair) == 1)
-                        ? pair
-                        : subRoot.left()), null);
-
-                    // Leaf pointers are updated
-                    split.link(((Leaf)subRoot).next());
-                    ((Leaf)subRoot).link(split);
-
-                    // splitting Leaves requires new parents, so the proper
-                    // values are promoted using a helper method
-                    promote(root, subRoot, split, split.left());
-                }
+                // if root contains the lowest KVPair with key
+                if (subRoot.left().equals(pair)
+                    || (subRoot.isFull() && subRoot.right().equals(pair)))
+                    return true;
             }
         }
-        return true;
+        return false;
+    }
+
+
+    public TreeNode recInsert(TreeNode subRoot, KVPair ins)
+    {
+
+        if (root == null)
+            root = new Leaf(ins);
+        else if (subRoot instanceof Internal)
+        {
+            Internal inRoot;
+            if (ins.compareTo((inRoot = (Internal)subRoot).left()) == -1)
+            {
+                inRoot.setLow(recInsert(((Internal)subRoot).low(), ins));
+
+                if (inRoot.low().overflow())
+                {
+                    inRoot.insert(inRoot.low().ovr());
+
+                    if (inRoot.overflow())
+                        inRoot.setOvrPtr(inRoot.mid());
+                    else
+                        inRoot.setHigh(inRoot.mid());
+                    inRoot.setMid(inRoot.low().split());
+                }
+            }
+            else if (subRoot.right() == null
+                || ins.compareTo(subRoot.right()) == -1)
+            {
+                inRoot.setMid(recInsert(((Internal)subRoot).mid(), ins));
+
+                if (inRoot.mid().overflow())
+                {
+                    inRoot.insert(inRoot.mid().ovr());
+
+                    if (inRoot.overflow())
+                        inRoot.setOvrPtr(inRoot.mid().split());
+                    else
+                        inRoot.setHigh(inRoot.mid().split());
+                }
+            }
+            else
+            {
+                inRoot.setHigh(recInsert(((Internal)subRoot).high(), ins));
+
+                if (inRoot.high().overflow())
+                {
+                    inRoot.insert(inRoot.high().ovr());
+                    inRoot.setOvrPtr(inRoot.high());
+                    inRoot.setHigh(inRoot.ovrPtr().split());
+                }
+            }
+
+        }
+        else {
+            subRoot.insert(ins);
+        }
+
+        if (subRoot == root && subRoot.overflow())
+            root = new Internal(subRoot.ovr(), subRoot, subRoot.split());
+        return subRoot;
+
     }
 
 
@@ -498,12 +505,7 @@ public class Two3PlusTree
         if (subRoot == original)
         {
             if (split != null)
-                root =
-                    ((!inTrash.isEmpty()) ? inTrash.remove(inTrash.size() - 1)
-                        .set(promo, original, split) : new Internal(
-                        promo,
-                        original,
-                        split));
+                root = new Internal(promo, original, split);
         }
 
         // if the promotion is less than the left KVPair of root, then the
@@ -534,14 +536,10 @@ public class Two3PlusTree
                 else
                 {
                     Internal parent =
-                        ((!inTrash.isEmpty()) ? inTrash.remove(
-                            inTrash.size() - 1).set(
+                        new Internal(
                             inRoot.high().left(),
                             inRoot.mid(),
-                            inRoot.high()) : new Internal(
-                            inRoot.high().left(),
-                            inRoot.mid(),
-                            inRoot.high()));
+                            inRoot.high());
 
                     KVPair newPromo = inRoot.left();
                     inRoot.setMid(split);
@@ -588,14 +586,7 @@ public class Two3PlusTree
                 else
                 {
                     Internal parent =
-                        ((!inTrash.isEmpty()) ? inTrash.remove(
-                            inTrash.size() - 1).set(
-                            inRoot.high().left(),
-                            split,
-                            inRoot.high()) : new Internal(
-                            inRoot.high().left(),
-                            split,
-                            inRoot.high()));
+                        new Internal(inRoot.high().left(), split, inRoot.high());
 
                     KVPair newPromo = split.left();
                     inRoot.setHigh(null);
@@ -626,13 +617,7 @@ public class Two3PlusTree
                     inRoot.setRight(promo);
                 else
                 {
-                    Internal parent =
-                        ((!inTrash.isEmpty()) ? inTrash.remove(
-                            inTrash.size() - 1)
-                            .set(promo, inRoot.high(), split) : new Internal(
-                            promo,
-                            inRoot.high(),
-                            split));
+                    Internal parent = new Internal(promo, inRoot.high(), split);
 
                     KVPair newPromo = inRoot.right();
                     inRoot.setHigh(null);

@@ -12,6 +12,7 @@ public class Internal
 {
     private TreeNode low;
     private TreeNode mid;
+    private TreeNode ovrPtr;
     private TreeNode high;
 
 
@@ -62,6 +63,16 @@ public class Internal
 
     // ----------------------------------------------------------
     /**
+     * @return the overflowing middle TreeNode
+     */
+    public TreeNode ovrPtr()
+    {
+        return ovrPtr;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Overloads the set method in the TreeNode class with pointers to low and
      * mid, and returns this.
      * @param left new left KVPair
@@ -74,6 +85,7 @@ public class Internal
         setLeft(left);
         setLow(low);
         setMid(mid);
+        setOvrPtr(null);
         setHigh(null);
         return this;
     }
@@ -111,5 +123,28 @@ public class Internal
         if (high == null)
             setRight(null);
         this.high = high;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sets the overflowing TreeNode.
+     * @param ovr new overflowing TreeNode
+     */
+    public void setOvrPtr(TreeNode ovr)
+    {
+        if (ovr == null)
+            setOvr(null);
+        this.ovrPtr = ovr;
+    }
+
+
+    // -------------------------------------------------------------------------
+    @Override
+    public Internal split()
+    {
+        Internal split = new Internal(right(), ovrPtr, high);
+        set(left(), low, mid);
+        return split;
     }
 }
