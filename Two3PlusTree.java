@@ -242,15 +242,14 @@ public class Two3PlusTree
 
     public TreeNode recInsert(TreeNode subRoot, KVPair ins)
     {
-
-        if (root == null)
+        if (subRoot == null)
             root = new Leaf(ins);
         else if (subRoot instanceof Internal)
         {
             Internal inRoot;
             if (ins.compareTo((inRoot = (Internal)subRoot).left()) == -1)
             {
-                inRoot.setLow(recInsert(((Internal)subRoot).low(), ins));
+                inRoot.setLow(recInsert(inRoot.low(), ins));
 
                 if (inRoot.low().overflow())
                 {
@@ -263,10 +262,10 @@ public class Two3PlusTree
                     inRoot.setMid(inRoot.low().split());
                 }
             }
-            else if (subRoot.right() == null
+            else if (!subRoot.isFull()
                 || ins.compareTo(subRoot.right()) == -1)
             {
-                inRoot.setMid(recInsert(((Internal)subRoot).mid(), ins));
+                inRoot.setMid(recInsert(inRoot.mid(), ins));
 
                 if (inRoot.mid().overflow())
                 {
@@ -280,7 +279,7 @@ public class Two3PlusTree
             }
             else
             {
-                inRoot.setHigh(recInsert(((Internal)subRoot).high(), ins));
+                inRoot.setHigh(recInsert(inRoot.high(), ins));
 
                 if (inRoot.high().overflow())
                 {
@@ -289,16 +288,14 @@ public class Two3PlusTree
                     inRoot.setHigh(inRoot.ovrPtr().split());
                 }
             }
-
         }
-        else {
+        else
             subRoot.insert(ins);
-        }
 
         if (subRoot == root && subRoot.overflow())
             root = new Internal(subRoot.ovr(), subRoot, subRoot.split());
-        return subRoot;
 
+        return subRoot;
     }
 
 
