@@ -92,6 +92,26 @@ public class Internal
 
 
     // -------------------------------------------------------------------------
+    @Override
+    public void setOvr(KVPair ovr)
+    {
+        if (ovr == null)
+            setOvrPtr(null);
+        super.setOvr(ovr);
+    }
+
+
+    // -------------------------------------------------------------------------
+    @Override
+    public void setRight(KVPair right)
+    {
+        if (right == null)
+            setHigh(null);
+        super.setRight(right);
+    }
+
+
+    // -------------------------------------------------------------------------
     /**
      * Sets the low TreeNode.
      * @param low new low TreeNode
@@ -120,8 +140,6 @@ public class Internal
      */
     public void setHigh(TreeNode high)
     {
-        if (high == null)
-            setRight(null);
         this.high = high;
     }
 
@@ -133,8 +151,6 @@ public class Internal
      */
     public void setOvrPtr(TreeNode ovr)
     {
-        if (ovr == null)
-            setOvr(null);
         this.ovrPtr = ovr;
     }
 
@@ -146,5 +162,12 @@ public class Internal
         Internal split = new Internal(right(), ovrPtr, high);
         set(left(), low, mid);
         return split;
+    }
+
+    // -------------------------------------------------------------------------
+    @Override
+    public boolean underflow()
+    {
+        return mid == null;
     }
 }

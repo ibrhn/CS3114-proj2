@@ -19,6 +19,11 @@ public abstract class TreeNode
      */
     abstract TreeNode split();
 
+    // ----------------------------------------------------------
+    /**
+     * @return if there is overflow
+     */
+    abstract boolean underflow();
 
     // ----------------------------------------------------------
     /**
@@ -178,16 +183,6 @@ public abstract class TreeNode
     public boolean overflow()
     {
         return ovrMid != null;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * @return if there is underflow
-     */
-    public boolean underflow()
-    {
-        return left == null;
     }
 
 
