@@ -81,22 +81,6 @@ public class Leaf
     }
 
 
-    // ----------------------------------------------------------
-    /**
-     * Links two Leaves together.
-     * @param next the new next Leaf
-     * @return next
-     */
-    @SuppressWarnings("hiding")
-    public Leaf link(Leaf next)
-    {
-        if (next != null)
-            next.setPrevious(this);
-        setNext(next);
-        return next;
-    }
-
-
     // -------------------------------------------------------------------------
     @Override
     public Leaf split()
@@ -105,6 +89,15 @@ public class Leaf
 
         setOvr(null);
         setRight(null);
+
+        split.setNext(next);
         return setNext(split);
+    }
+
+    // -------------------------------------------------------------------------
+    @Override
+    public boolean underflow()
+    {
+        return (left() == null) && (right() == null);
     }
 }
