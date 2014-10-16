@@ -42,10 +42,7 @@ public class Two3PlusTree
      */
     public boolean insert(Handle key, Handle value)
     {
-        if (!findExactMatch(this.root,key, value))
-            return recInsert(root, new KVPair(key, value)) != null;
-
-        return false;
+        return recInsert(root, new KVPair(key, value));
     }
 
 
@@ -221,7 +218,7 @@ public class Two3PlusTree
                 else if (!subRoot.isFull()
                     || pair.compareTo(subRoot.right()) == -1)
                     return findExactMatch(((Internal)subRoot).mid(), key, value);
-                // if key is greater than or equal to root.right().key()
+                // i    f key is greater than or equal to root.right().key()
                 else
                     return findExactMatch(
                         ((Internal)subRoot).high(),
@@ -240,16 +237,19 @@ public class Two3PlusTree
     }
 
 
-    public TreeNode recInsert(TreeNode subRoot, KVPair ins)
+    public boolean recInsert(TreeNode subRoot, KVPair ins)
     {
         if (subRoot == null)
             root = new Leaf(ins);
+        else if (subRoot.containsEqual(ins))
+            return false;
         else if (subRoot instanceof Internal)
         {
             Internal inRoot;
             if (ins.compareTo((inRoot = (Internal)subRoot).left()) == -1)
             {
-                inRoot.setLow(recInsert(inRoot.low(), ins));
+                if (!recInsert(inRoot.low(), ins))
+                    return false;
 
                 if (inRoot.low().overflow())
                 {
@@ -265,7 +265,8 @@ public class Two3PlusTree
             else if (!subRoot.isFull()
                 || ins.compareTo(subRoot.right()) == -1)
             {
-                inRoot.setMid(recInsert(inRoot.mid(), ins));
+                if (!recInsert(inRoot.mid(), ins))
+                    return false;
 
                 if (inRoot.mid().overflow())
                 {
@@ -279,7 +280,8 @@ public class Two3PlusTree
             }
             else
             {
-                inRoot.setHigh(recInsert(inRoot.high(), ins));
+                if (!recInsert(inRoot.high(), ins))
+                    return false;
 
                 if (inRoot.high().overflow())
                 {
@@ -295,7 +297,7 @@ public class Two3PlusTree
         if (subRoot == root && subRoot.overflow())
             root = new Internal(subRoot.ovr(), subRoot, subRoot.split());
 
-        return subRoot;
+        return true;
     }
 
 
