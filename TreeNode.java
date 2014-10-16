@@ -19,6 +19,11 @@ public abstract class TreeNode
      */
     abstract TreeNode split();
 
+    // ----------------------------------------------------------
+    /**
+     * @return if there is overflow
+     */
+    abstract boolean underflow();
 
     // ----------------------------------------------------------
     /**
@@ -75,7 +80,30 @@ public abstract class TreeNode
 
 
     /**
-     * Inserts a KVPair into the TreeNode.
+     * Setter for the entire TreeNode.
+     * @param left the new left KVPair
+     * @param right the new right KVPair
+     * @return this
+     */
+    @SuppressWarnings("hiding")
+    public TreeNode compSet(KVPair left, KVPair right)
+    {
+        if (right == null)
+        {
+            setLeft(left);
+            setRight(right);
+        }
+        else
+        {
+            setLeft((left.compareTo(right) <= 0) ? left : right);
+            setRight((left.compareTo(right) <= 0) ? right : left);
+        }
+        return this;
+    }
+
+
+    /**
+     * Setter for the entire TreeNode.
      * @param ins KVPair to be inserted
      */
     public void insert(KVPair ins)
@@ -106,25 +134,9 @@ public abstract class TreeNode
     }
 
 
-    // ----------------------------------------------------------
-    /**
-     * Removes a KVPair from the TreeNode.
-     * @param rem KVPair to be removed
-     */
-    public void remove(KVPair rem)
-    {
-        if (rem != null)
-        {
-            if (left.equals(rem))
-                setLeft(null);
-            else if (right.equals(rem))
-                setRight(null);
-        }
-    }
-
 
     /**
-     * Sets the left KVPair.
+     * Setting for the left KVPair.
      * @param left the new left KVPair
      */
     public void setLeft(KVPair left)
@@ -134,7 +146,7 @@ public abstract class TreeNode
 
 
     /**
-     * Sets the right KVPair.
+     * Setting for the right KVPair.
      * @param right the new right KVPair
      */
     public void setRight(KVPair right)
@@ -145,12 +157,12 @@ public abstract class TreeNode
 
     // ----------------------------------------------------------
     /**
-     * Sets the overflowing middle KVPair.
-     * @param ovr the overflowing KVPair
+     * Setter for the overflowing middle KVPair.
+     * @param mid the overflowing KVPair
      */
-    public void setOvr(KVPair ovr)
+    public void setOvr(KVPair mid)
     {
-        this.ovrMid = ovr;
+        this.ovrMid = mid;
     }
 
 
@@ -171,16 +183,6 @@ public abstract class TreeNode
     public boolean overflow()
     {
         return ovrMid != null;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * @return if there is underflow
-     */
-    public boolean underflow()
-    {
-        return (left == null) && (right == null);
     }
 
 
