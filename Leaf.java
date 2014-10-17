@@ -11,7 +11,6 @@ public class Leaf
     extends TreeNode
 {
     private Leaf next;
-    private Leaf prev;
 
 
     // -------------------------------------------------------------------------
@@ -47,37 +46,16 @@ public class Leaf
     }
 
 
-    // ----------------------------------------------------------
-    /**
-     * @return the previous Leaf
-     */
-    public Leaf previous()
-    {
-        return prev;
-    }
-
-
     // -------------------------------------------------------------------------
     /**
      * Sets the next Leaf.
-     * @param next the new next Leaf
+     * @param nxt the new next Leaf
      * @return next
      */
-    public Leaf setNext(Leaf next)
+    public Leaf setNext(Leaf nxt)
     {
-        this.next = next;
-        return next;
-    }
-
-
-    // -------------------------------------------------------------------------
-    /**
-     * Sets the previous Leaf.
-     * @param prev the new previous Leaf
-     */
-    public void setPrevious(Leaf prev)
-    {
-        this.prev = prev;
+        this.next = nxt;
+        return nxt;
     }
 
 

@@ -32,8 +32,6 @@ public class TreeNodeTest
      */
     public void testTreeNode()
     {
-        KVPair left;
-        KVPair right;
 
         assertTrue(node.containsEqual(new KVPair(new Handle(2),
             new Handle(4))));
@@ -44,28 +42,19 @@ public class TreeNodeTest
         node = new Leaf(new KVPair(new Handle(3), new Handle(5)),
             new KVPair(new Handle(2), new Handle(4)));
 
-        node.compSet((left = new KVPair(new Handle(2), new Handle(4))),
-            (right = new KVPair(new Handle(3), new Handle(5))));
-        assertTrue(node.isFull());
-
-        assertTrue(node.contains(left));
-        assertTrue(node.contains(right));
-
         assertFalse(node.contains(new KVPair(new Handle(2), new Handle(4))));
         assertFalse(node.contains(new KVPair(new Handle(3), new Handle(5))));
-        assertTrue(node.containsEqual(new KVPair(new Handle(2), new Handle(4))));
-        assertTrue(node.containsEqual(new KVPair(new Handle(3), new Handle(5))));
+        assertTrue(node.containsEqual(new KVPair(new Handle(2), new
+            Handle(4))));
+        assertTrue(node.containsEqual(new KVPair(new Handle(3), new
+            Handle(5))));
         assertEquals("2 4 3 5", node.toString());
 
-        node.compSet(right, null);
-        assertFalse(node.isFull());
-        assertEquals(right, node.left());
-        assertNull(node.right());
+        assertNotNull(node.right());
 
-        assertEquals("3 5", node.toString());
+        assertEquals("2 4 3 5", node.toString());
 
-        node.compSet(null, null);
-        assertTrue(node.containsEqual(null));
+        assertNotNull(node.containsEqual(null));
         assertFalse(node.containsEqual(new KVPair(new Handle(0),
             new Handle(1))));
     }
@@ -98,9 +87,7 @@ public class TreeNodeTest
     public void testLeaf()
     {
         Leaf next = new Leaf(new KVPair(new Handle(5), new Handle(6)), null);
-        assertEquals(next, leaf.link(next));
-
+        leaf.setNext(next);
         assertEquals(next, leaf.next());
-        assertEquals(leaf, next.previous());
     }
 }

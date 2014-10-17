@@ -20,14 +20,14 @@ public class Internal
     /**
      * Initializes the Internal TreeNode by setting the left KVPair.
      * @param left left KVPair
-     * @param low low TreeNode
-     * @param mid middle TreeNode
+     * @param lw low TreeNode
+     * @param md middle TreeNode
      */
-    public Internal(KVPair left, TreeNode low, TreeNode mid)
+    public Internal(KVPair left, TreeNode lw, TreeNode md)
     {
         super(left);
-        setLow(low);
-        setMid(mid);
+        setLow(lw);
+        setMid(md);
     }
 
 
@@ -76,17 +76,17 @@ public class Internal
      * Overloads the set method in the TreeNode class with pointers to low and
      * mid, and returns this.
      * @param left new left KVPair
-     * @param low new low TreeNode
-     * @param mid new mid TreeNode
+     * @param lw new low TreeNode
+     * @param md new mid TreeNode
      * @return this
      */
-    public Internal set(KVPair left, TreeNode low, TreeNode mid)
+    public Internal set(KVPair left, TreeNode lw, TreeNode md)
     {
         setLeft(left);
-        setLow(low);
-        setMid(mid);
-        setOvrPtr(null);
-        setHigh(null);
+        setLow(lw);
+        setMid(md);
+        setOvr(null);
+        setRight(null);
         return this;
     }
 
@@ -96,7 +96,9 @@ public class Internal
     public void setOvr(KVPair ovr)
     {
         if (ovr == null)
+        {
             setOvrPtr(null);
+        }
         super.setOvr(ovr);
     }
 
@@ -106,7 +108,9 @@ public class Internal
     public void setRight(KVPair right)
     {
         if (right == null)
+        {
             setHigh(null);
+        }
         super.setRight(right);
     }
 

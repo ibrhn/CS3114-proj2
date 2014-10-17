@@ -37,12 +37,12 @@ public class Handle implements Comparable<Handle>
     /**
      * Sets num to new value.
      *
-     * @param num
+     * @param number
      *            new value to set equal to this.num
      */
-    public void set(int num)
+    public void set(int number)
     {
-        this.num = num;
+        this.num = number;
     }
 
 

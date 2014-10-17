@@ -35,6 +35,6 @@ public class ControllerTest
         mm.main(in);
 
         assertEquals(10, mm.controller().initHashSz());
-        assertEquals(320, mm.controller().pool().capacity());
+        assertEquals(9600, mm.controller().pool().capacity());
     }
 }

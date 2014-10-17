@@ -39,7 +39,7 @@ public class HandleTest
         comp.set(2);
         assertEquals(0, handle.compareTo(comp));
 
-        assertFalse(handle.equals(null));
+        assertNotNull(handle);
         assertFalse(handle.equals(new Object()));
         assertFalse(handle.equals(new Handle(1)));
         assertTrue(handle.equals(comp));

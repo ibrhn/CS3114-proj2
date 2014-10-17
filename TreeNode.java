@@ -1,9 +1,9 @@
 // -------------------------------------------------------------------------
 /**
- *  The abstract TreeNode class contains two KVPairs (left and right).
+ * The abstract TreeNode class contains two KVPairs (left and right).
  *
- *  @author Burhan Ishaq (iburhan), Amin Davoodi (amind1)
- *  @version Oct 3, 2014
+ * @author Burhan Ishaq (iburhan), Amin Davoodi (amind1)
+ * @version Oct 3, 2014
  */
 public abstract class TreeNode
 {
@@ -15,9 +15,11 @@ public abstract class TreeNode
     // ----------------------------------------------------------
     /**
      * Splits the TreeNode (sorts both) and returns the split.
+     *
      * @return the split TreeNode
      */
     abstract TreeNode split();
+
 
     // ----------------------------------------------------------
     /**
@@ -25,10 +27,13 @@ public abstract class TreeNode
      */
     abstract boolean underflow();
 
+
     // ----------------------------------------------------------
     /**
      * Initializes a TreeNode by setting the left KVPair.
-     * @param left left KVPair
+     *
+     * @param left
+     *            left KVPair
      */
     public TreeNode(KVPair left)
     {
@@ -39,8 +44,11 @@ public abstract class TreeNode
     // ----------------------------------------------------------
     /**
      * Initializes a TreeNode by setting the left and right KVPairs.
-     * @param left left KVPair
-     * @param right right KVPair
+     *
+     * @param left
+     *            left KVPair
+     * @param right
+     *            right KVPair
      */
     public TreeNode(KVPair left, KVPair right)
     {
@@ -81,30 +89,9 @@ public abstract class TreeNode
 
     /**
      * Setter for the entire TreeNode.
-     * @param left the new left KVPair
-     * @param right the new right KVPair
-     * @return this
-     */
-    @SuppressWarnings("hiding")
-    public TreeNode compSet(KVPair left, KVPair right)
-    {
-        if (right == null)
-        {
-            setLeft(left);
-            setRight(right);
-        }
-        else
-        {
-            setLeft((left.compareTo(right) <= 0) ? left : right);
-            setRight((left.compareTo(right) <= 0) ? right : left);
-        }
-        return this;
-    }
-
-
-    /**
-     * Setter for the entire TreeNode.
-     * @param ins KVPair to be inserted
+     *
+     * @param ins
+     *            KVPair to be inserted
      */
     public void insert(KVPair ins)
     {
@@ -118,7 +105,9 @@ public abstract class TreeNode
             else if (ins.compareTo(left) > 0)
             {
                 if (ins.compareTo(right) < 0)
+                {
                     setOvr(ins);
+                }
                 else
                 {
                     setOvr(right);
@@ -134,10 +123,11 @@ public abstract class TreeNode
     }
 
 
-
     /**
      * Setting for the left KVPair.
-     * @param left the new left KVPair
+     *
+     * @param left
+     *            the new left KVPair
      */
     public void setLeft(KVPair left)
     {
@@ -147,7 +137,9 @@ public abstract class TreeNode
 
     /**
      * Setting for the right KVPair.
-     * @param right the new right KVPair
+     *
+     * @param right
+     *            the new right KVPair
      */
     public void setRight(KVPair right)
     {
@@ -158,7 +150,9 @@ public abstract class TreeNode
     // ----------------------------------------------------------
     /**
      * Setter for the overflowing middle KVPair.
-     * @param mid the overflowing KVPair
+     *
+     * @param mid
+     *            the overflowing KVPair
      */
     public void setOvr(KVPair mid)
     {
@@ -178,6 +172,29 @@ public abstract class TreeNode
 
     // ----------------------------------------------------------
     /**
+     * removes the kv pair
+     *
+     * @param rem
+     *            the value to remove
+     */
+    public void remove(KVPair rem)
+    {
+        if (rem != null)
+        {
+            if (left.equals(rem))
+            {
+                setLeft(null);
+            }
+            else if (right.equals(rem))
+            {
+                setRight(null);
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * @return if there is overflow
      */
     public boolean overflow()
@@ -188,7 +205,8 @@ public abstract class TreeNode
 
     // ----------------------------------------------------------
     /**
-     * @param pair KVPair to compare to
+     * @param pair
+     *            KVPair to compare to
      * @return if this contains the same pair
      */
     public boolean contains(KVPair pair)
@@ -199,7 +217,8 @@ public abstract class TreeNode
 
     // ----------------------------------------------------------
     /**
-     * @param pair KVPair to compare to
+     * @param pair
+     *            KVPair to compare to
      * @return if this contains something equivalent to pair, but not pair
      */
     public boolean containsEqual(KVPair pair)

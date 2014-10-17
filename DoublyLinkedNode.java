@@ -17,7 +17,7 @@ public class DoublyLinkedNode<T>
     // ~ Fields ................................................................
 
     // The data element stored in the node.
-    private T       data;
+    private T                   data;
 
     // The next node in the sequence.
     private DoublyLinkedNode<T> next;
@@ -112,15 +112,25 @@ public class DoublyLinkedNode<T>
     public DoublyLinkedNode<T> join(DoublyLinkedNode<T> newNext)
     {
         if (this.next != null)
+        {
             throw new IllegalStateException("A node is already following "
                 + "this one.");
+        }
 
         else if (newNext != null && newNext.previous != null)
+        {
             throw new IllegalStateException("A node is already preceding "
                 + "the one passed to this method.");
+        }
 
         this.next = newNext;
-        return (newNext != null) ? (newNext.previous = this) : this;
+
+        if (newNext != null)
+        {
+            newNext.previous = this;
+            return newNext.previous;
+        }
+        return this;
     }
 
 
@@ -135,11 +145,14 @@ public class DoublyLinkedNode<T>
         DoublyLinkedNode<T> oldNext = this.next;
 
         if (next != null)
+        {
             next.previous = null;
+        }
 
         this.next = null;
         return oldNext;
     }
+
 
     // ----------------------------------------------------------
     /**

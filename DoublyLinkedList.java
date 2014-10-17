@@ -50,10 +50,14 @@ public class DoublyLinkedList<T>
     public T get()
     {
         if (size != 0)
+        {
             return current.get();
+        }
 
         else
+        {
             throw new NoSuchElementException("The list is empty.");
+        }
     }
 
 
@@ -71,12 +75,14 @@ public class DoublyLinkedList<T>
 
         if (size == 0)
         {
-            head.join((current = node).join(head.split()));
+            current = node;
+            head.join(current.join(head.split()));
         }
         else
         {
             DoublyLinkedNode<T> prev = current.previous();
-            prev.join((current = node).join(prev.split()));
+            current = node;
+            prev.join(current.join(prev.split()));
         }
         size++;
     }
@@ -89,8 +95,11 @@ public class DoublyLinkedList<T>
     public void moveToFront()
     {
         if (size != 0)
+        {
             current = head.next();
+        }
     }
+
 
     // ----------------------------------------------------------
     /**
@@ -112,7 +121,9 @@ public class DoublyLinkedList<T>
     public void next()
     {
         if (current.next() != tail)
+        {
             current = current.next();
+        }
     }
 
 
@@ -123,7 +134,9 @@ public class DoublyLinkedList<T>
     public void previous()
     {
         if (current.previous() != head)
+        {
             current = current.previous();
+        }
     }
 
 
@@ -172,8 +185,10 @@ public class DoublyLinkedList<T>
     public DoublyLinkedNode<T> remove()
     {
         if (size == 0)
+        {
             throw new NoSuchElementException(
                 "The list is empty, there is nothing to remove.");
+        }
 
         DoublyLinkedNode<T> prev = current.previous();
 

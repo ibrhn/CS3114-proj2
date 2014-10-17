@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 // -------------------------------------------------------------------------
 /**
  * Tests the Two3PlusTree class.
@@ -161,7 +163,7 @@ public class Two3PlusTreeTest
     public void testList()
         throws Exception
     {
-        assertEquals("", tree.list(new Handle(0)));
+        assertEquals(new ArrayList<String>(), tree.list(new Handle(0)));
     }
 
 
@@ -419,6 +421,22 @@ public class Two3PlusTreeTest
             + "    1 27\n"
             + "    1 34\n", tree.print());
 
+        assertFalse(tree.delete(new Handle(3), new Handle(2)));
+        assertFalse(tree.delete(new Handle(1), new Handle(89)));
+        assertFalse(tree.delete(null, null));
+        assertEquals("Printing 2-3 tree:\n"
+            + "1 24 1 27\n"
+            + "  1 15 1 16\n"
+            + "    1 5\n"
+            + "    1 15\n"
+            + "    1 16\n"
+            + "  1 26\n"
+            + "    1 24\n"
+            + "    1 26\n"
+            + "  1 34\n"
+            + "    1 27\n"
+            + "    1 34\n", tree.print());
+
         assertTrue(tree.insert(new Handle(1), new Handle(4)));
         assertTrue(tree.insert(new Handle(1), new Handle(36)));
         assertTrue(tree.insert(new Handle(1), new Handle(38)));
@@ -543,14 +561,116 @@ public class Two3PlusTreeTest
             + "1 4\n", tree.print());
         assertTrue(tree.delete(new Handle(1), new Handle(4)));
         assertEquals("Printing 2-3 tree:\n", tree.print());
+
+        assertTrue(tree.insert(new Handle(1), new Handle(3)));
+        assertTrue(tree.insert(new Handle(3), new Handle(1)));
+        assertTrue(tree.insert(new Handle(1), new Handle(4)));
+        assertTrue(tree.insert(new Handle(4), new Handle(1)));
+        assertTrue(tree.insert(new Handle(2), new Handle(5)));
+        assertTrue(tree.insert(new Handle(5), new Handle(2)));
+        assertEquals("Printing 2-3 tree:\n"
+            + "3 1\n"
+            + "  1 4\n"
+            + "    1 3\n"
+            + "    1 4 2 5\n"
+            + "  4 1\n"
+            + "    3 1\n"
+            + "    4 1 5 2\n", tree.print());
+
+        assertTrue(tree.delete(new Handle(1), new Handle(3)));
+        assertTrue(tree.delete(new Handle(3), new Handle(1)));
+//        assertEquals("Printing 2-3 tree:\n"
+//            + "3 1\n"
+//            + "  1 4\n"
+//            + "    1 3\n"
+//            + "    1 4 2 5\n"
+//            + "  4 1\n"
+//            + "    3 1\n"
+//            + "    4 1 5 2\n", tree.print());
+    }
+
+    /**
+     * also tests remove method
+     */
+    public void testTwo() {
+        assertTrue(tree.insert(new Handle(1), new Handle(0)));
+        assertTrue(tree.insert(new Handle(1), new Handle(5)));
+        assertTrue(tree.insert(new Handle(1), new Handle(10)));
+        assertTrue(tree.insert(new Handle(1), new Handle(15)));
+        assertTrue(tree.insert(new Handle(1), new Handle(20)));
+        assertTrue(tree.insert(new Handle(1), new Handle(25)));
+        assertTrue(tree.insert(new Handle(1), new Handle(30)));
+        assertTrue(tree.insert(new Handle(1), new Handle(18)));
+        assertTrue(tree.insert(new Handle(1), new Handle(19)));
+        assertTrue(tree.delete(new Handle(1), new Handle(20)));
+        assertTrue(tree.delete(new Handle(1), new Handle(25)));
+
+        assertEquals("Printing 2-3 tree:\n"
+            + "1 10 1 18\n"
+            + "  1 5\n"
+            + "    1 0\n"
+            + "    1 5\n"
+            + "  1 15\n"
+            + "    1 10\n"
+            + "    1 15\n"
+            + "  1 30\n"
+            + "    1 18 1 19\n"
+            + "    1 30\n", tree.print());
+
+        assertTrue(tree.insert(new Handle(1), new Handle(35)));
+        assertTrue(tree.insert(new Handle(1), new Handle(40)));
+        assertTrue(tree.insert(new Handle(1), new Handle(45)));
+        assertTrue(tree.insert(new Handle(1), new Handle(20)));
+
+        assertTrue(tree.delete(new Handle(1), new Handle(40)));
+        assertTrue(tree.delete(new Handle(1), new Handle(35)));
+
     }
 
     // ----------------------------------------------------------
     /**
      * Tests the remove method.
+     * @throws Exception
      */
-    public void testRemove()
+    public void testRemove() throws Exception
     {
+        tree.insert(new Handle(3), new Handle(10));
+        tree.insert(new Handle(3), new Handle(8));
+        tree.insert(new Handle(1), new Handle(14));
+        assertEquals(tree.search(new Handle(2)), null);
+        assertEquals(tree.search(new Handle(3)).toString(), "3 8 3 10");
+        tree.insert(new Handle(5), new Handle(14));
+        tree.insert(new Handle(3), new Handle(14));
+        assertEquals(tree.search(new Handle(3)).toString(), "3 8");
+        tree.insert(new Handle(9), new Handle(14));
+        tree.insert(new Handle(6), new Handle(14));
+        assertEquals(tree.search(new Handle(3)).toString(), "3 8");
+        assertEquals(tree.search(new Handle(1)).toString(), "1 14");
+        assertEquals(tree.search(new Handle(5)).toString(), "5 14");
+        assertEquals("Printing 2-3 tree:\n"
+            + "3 10 5 14\n"
+            + "  3 8\n"
+            + "    1 14\n"
+            + "    3 8\n"
+            + "  3 14\n"
+            + "    3 10\n"
+            + "    3 14\n"
+            + "  6 14\n"
+            + "    5 14\n"
+            + "    6 14 9 14\n", tree.print());
+        assertEquals(1, tree.remove(new Handle(1)).size());
+        assertEquals("Printing 2-3 tree:\n"
+            + "5 14\n"
+            + "  3 10 3 14\n"
+            + "    3 8\n"
+            + "    3 10\n"
+            + "    3 14\n"
+            + "  6 14\n"
+            + "    5 14\n"
+            + "    6 14 9 14\n", tree.print());
+
+        tree.clear();
+
         tree.insert(new Handle(1), new Handle(8));
         tree.insert(new Handle(1), new Handle(16));
         tree.insert(new Handle(1), new Handle(32));
@@ -563,6 +683,7 @@ public class Two3PlusTreeTest
         tree.insert(new Handle(1), new Handle(12));
         tree.insert(new Handle(1), new Handle(25));
         tree.insert(new Handle(1), new Handle(26));
+
         assertEquals("Printing 2-3 tree:\n"
             + "1 24\n"
             + "  1 8\n"
@@ -580,8 +701,30 @@ public class Two3PlusTreeTest
             + "      1 27 1 28\n"
             + "      1 32 1 40\n", tree.print());
 
+        tree.delete(new Handle(1), new Handle(40));
+        tree.delete(new Handle(1), new Handle(28));
+        tree.delete(new Handle(1), new Handle(26));
+        tree.delete(new Handle(1), new Handle(12));
+        assertEquals("Printing 2-3 tree:\n"
+            + "1 24\n"
+            + "  1 8\n"
+            + "    1 5\n"
+            + "      1 4\n"
+            + "      1 5\n"
+            + "    1 16\n"
+            + "      1 8\n"
+            + "      1 16\n"
+            + "  1 27\n"
+            + "    1 25\n"
+            + "      1 24\n"
+            + "      1 25\n"
+            + "    1 32\n"
+            + "      1 27\n"
+            + "      1 32\n", tree.print());
+
         tree.remove(new Handle(1));
         assertEquals("Printing 2-3 tree:\n", tree.print());
+        // assertEquals("Printing 2-3 tree:\n", tree.print());
     }
 
 }

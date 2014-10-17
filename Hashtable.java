@@ -5,17 +5,15 @@ import java.util.Arrays;
  * The Hashtable class contains half of the actual Hashtable data structure. It
  * contains a Handle array (where the Handles are references, or keys, that
  * indicate the location of the corresponding byte array in the memory pool).
- *
- * The Handle array, or map, uses a hashing function to find proper positions
- * to insert Handles into the map. If a String hashes to a location for a
+ * The Handle array, or map, uses a hashing function to find proper positions to
+ * insert Handles into the map. If a String hashes to a location for a
  * corresponding Handle in the same spot as another Handle (assuming they are
  * different), then the map is quadratically probed to find another position.
  * This ensures each Handle has a unique position in the map, and that finding
  * and retrieving the position for hashed String Handle is much more efficient
- * than any linear search.
- * Removing Handles require the use of tombstones. Tombstones indicate that a
- * Handle has been removed from a position. This technique is used to avoid
- * accidental insertions of duplicate Strings.
+ * than any linear search. Removing Handles require the use of tombstones.
+ * Tombstones indicate that a Handle has been removed from a position. This
+ * technique is used to avoid accidental insertions of duplicate Strings.
  *
  * @author Burhan Ishaq (iburhan), Amin Davoodi (amind1)
  * @version Sep 14, 2014
@@ -37,7 +35,8 @@ public class Hashtable
      */
     public Hashtable(Controller ctrl)
     {
-        map = new Handle[(this.ctrl = ctrl).initHashSz()];
+        this.ctrl = ctrl;
+        map = new Handle[ctrl.initHashSz()];
         usage = 0;
     }
 
@@ -61,7 +60,8 @@ public class Hashtable
         // returns false if there is no viable position to place a Handle
         // (corresponding to key) in the map (usually only if there is a
         // duplicate String already in the pool)
-        if ((pos = findPos(key)) != -1)
+        pos = findPos(key);
+        if (pos != -1)
         {
             // if the usage before the Handle is inserted into the map is
             // greater than half its capacity, then its capacity is doubled and
@@ -73,8 +73,12 @@ public class Hashtable
                 map = new Handle[map.length * 2];
 
                 for (int i = 0; i < copy.length; i++)
+                {
                     if (ctrl.pool().getString(copy[i]) != null)
+                    {
                         map[findPos(ctrl.pool().getString(copy[i]))] = copy[i];
+                    }
+                }
 
                 pos = findPos(key);
             }
@@ -83,9 +87,13 @@ public class Hashtable
             // is adjusted to accommodate the Handle insertion; otherwise, a
             // new Handle is substantiated at pos
             if (map[pos] != null)
+            {
                 map[pos].set(ctrl.pool().insert(key.getBytes()));
+            }
             else
+            {
                 map[pos] = new Handle(ctrl.pool().insert(key.getBytes()));
+            }
 
             return true;
         }
@@ -97,21 +105,19 @@ public class Hashtable
     /**
      * Removes key from the memory pool and sets the corresponding Handle to a
      * tombstone (an indicator that a (non-tombstone) Handle had been at that
-     * location, but was removed).
-     *
-     * The tombstone is necessary to prevent duplicate insertions. For example,
-     * a String str hashes to position 0 and is inserted there. Then a String
-     * str2 hashes to the same position, but is then quadratically probed to
-     * position 1 and inserted there. Then the original str is removed, and
-     * there is an attempt to insert str2 (although, it is already in the map).
-     * It will hash to position 0 (which is no longer occupied), and this
-     * duplicate will be inserted there.
-     * To avoid this, we have an indicator at any position where a Handle was
-     * removed (a tombstone). This indicator forces any insertion to check
-     * every other possible location for duplicates before returning to this
-     * first tombstone location. If the check shows there are no duplicates,
-     * then a new Handle (corresponding to an actual String) can replace the
-     * tombstone (by updating the tombstone with the new position).
+     * location, but was removed). The tombstone is necessary to prevent
+     * duplicate insertions. For example, a String str hashes to position 0 and
+     * is inserted there. Then a String str2 hashes to the same position, but is
+     * then quadratically probed to position 1 and inserted there. Then the
+     * original str is removed, and there is an attempt to insert str2
+     * (although, it is already in the map). It will hash to position 0 (which
+     * is no longer occupied), and this duplicate will be inserted there. To
+     * avoid this, we have an indicator at any position where a Handle was
+     * removed (a tombstone). This indicator forces any insertion to check every
+     * other possible location for duplicates before returning to this first
+     * tombstone location. If the check shows there are no duplicates, then a
+     * new Handle (corresponding to an actual String) can replace the tombstone
+     * (by updating the tombstone with the new position).
      *
      * @param key
      *            String to be removed from the memory pool
@@ -156,9 +162,13 @@ public class Hashtable
         String hndl;
         String str = "";
         for (int i = 0; i < map.length; i++)
-            if ((hndl = ctrl.pool().getString(map[i])) != null
-            && map[i] != null && map[i].get() != -1)
+        {
+            hndl = ctrl.pool().getString(map[i]);
+            if (hndl != null && map[i] != null && map[i].get() != -1)
+            {
                 str += "|" + hndl + "| " + i + "\n";
+            }
+        }
         return str;
     }
 
@@ -185,18 +195,27 @@ public class Hashtable
 
     // ----------------------------------------------------------
     /**
-     * @param key String to be searched
+     * @param key
+     *            String to be searched
      * @return the Handle in the HashTable corresponding to key
      * @throws Exception
      */
-    public Handle getHandle(String key) throws Exception
+    public Handle getHandle(String key)
+        throws Exception
     {
-        int pos;
-        return ((pos = getPos(key)) != -1)
-            ? map[pos] : null;
+        int pos = getPos(key);
+        return (pos != -1) ? map[pos] : null;
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * @param key
+     *            key to search for corresponding Handle
+     * @return the position of the newly inserted Handle in the map (-1, if it
+     *         wasn't inserted)
+     * @throws Exception
+     */
     private int findPos(String key)
         throws Exception
     {
@@ -208,19 +227,25 @@ public class Hashtable
         // position to place a Handle corresponding to key by quadratically
         // probing to the next position as to check each probed position where
         // pos != null
-        for (int i = 0; map[(pos = (start + (i * i)) % map.length)] != null;
-            i++)
+        pos = start % map.length;
+        for (int i = 0; map[pos] != null; i++)
         {
             // saves the location of the first encountered tombstone for
             // reference; if the loop breaks and tmbstn != -1, then the initial
             // tombstone location is the best position to place the Handle
             if (map[pos].get() == -1 && tmbstn == -1)
+            {
                 tmbstn = pos;
+            }
 
             // returns -1 if there is a duplicate String already in the pool
             else if (map[pos].get() != -1
                 && ctrl.pool().getString(map[pos]).equals(key))
-                    return -1;
+            {
+                return -1;
+            }
+
+            pos = (start + (i * i)) % map.length;
         }
 
         // if a tombstone was encountered before the null position, that means
@@ -230,34 +255,55 @@ public class Hashtable
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * @param key
+     *            String's Handle to be found
+     * @return the position of the corresponding Handle (-1, if not found)
+     * @throws Exception
+     */
     private int getPos(String key)
         throws Exception
     {
         int start = (int)hash(key);
-        int pos = start;
+        int pos = start % map.length;
 
         // quadratically probes after the initial hash position to locate a
         // String in the map (returns -1, if the loop gets back to the starting
         // position without finding the location of a Handle corresponding to
         // key)
-        for (int i = 0; (pos = (start + (i * i)) % map.length) != start
-            || i == 0; i++)
+        for (int i = 1; pos != start || i == 1; i++)
         {
             // if the function probes to an empty position (void of actual
             // Handles and tombstones), this means key is not in the pool and
             // there is no corresponding Handle in the map either
             if (map[pos] == null)
+            {
                 return -1;
+            }
 
             // returns pos if a Handle corresponding to key is found
             else if (map[pos].get() != -1
                 && ctrl.pool().getString(map[pos]).equals(key))
-                    return pos;
+            {
+                return pos;
+            }
+
+            pos = (start + (i * i)) % map.length;
         }
         return -1;
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Hashes String key and returns its has value
+     *
+     * @param key
+     *            String to be hashed
+     * @return the hash value
+     * @throws Exception
+     */
     private long hash(String key)
     {
         String keyString = key;

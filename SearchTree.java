@@ -42,8 +42,10 @@ public class SearchTree
     public static void main(String[] args)
         throws Exception
     {
-        (ctrl = new Controller(Integer.parseInt(args[0]),
-                Integer.parseInt(args[1]))).parse(args[2]);
+        int arg0 = Integer.parseInt(args[0]);
+        int arg1 = Integer.parseInt(args[1]);
+        ctrl = new Controller(arg0, arg1);
+        ctrl.parse(args[2]);
     }
 
 

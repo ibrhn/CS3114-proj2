@@ -124,7 +124,12 @@ public class Node<T>
         }
 
         this.next = newNext;
-        return (newNext != null) ? (newNext.previous = this) : this;
+        if (newNext != null)
+        {
+            newNext.previous = this;
+            return newNext.previous;
+        }
+        return this;
     }
 
 
@@ -146,6 +151,7 @@ public class Node<T>
         this.next = null;
         return oldNext;
     }
+
 
     // ----------------------------------------------------------
     /**

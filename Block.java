@@ -52,16 +52,17 @@ public class Block
     /**
      * Sets Block position and length to pos and len respectively.
      *
-     * @param pos
+     * @param position
      *            new position
-     * @param len
+     * @param length
      *            new length
      * @return this
      */
-    public Block set(int pos, int len)
+    public Block set(int position, int length)
     {
-        this.pos = pos;
-        this.len = len;
+        pos = position;
+        len = length;
+
         return this;
     }
 

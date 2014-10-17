@@ -110,14 +110,14 @@ public class KVPair
     // ----------------------------------------------------------
     /**
      * Setter for KVPair for both "key" and "value".
-     * @param key new "key" Handle
-     * @param value new "value" Handle
+     * @param ky new "key" Handle
+     * @param vlu new "value" Handle
      * @return this
      */
-    public KVPair set(Handle key, Handle value)
+    public KVPair set(Handle ky, Handle vlu)
     {
-        setKey(key);
-        setValue(value);
+        setKey(ky);
+        setValue(vlu);
         return this;
     }
 

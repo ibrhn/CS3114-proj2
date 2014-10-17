@@ -37,7 +37,8 @@ public class MemPool
      */
     public MemPool(int size)
     {
-        pool = new byte[initCapacity = size];
+        initCapacity = size;
+        pool = new byte[initCapacity];
 
         fBList = new DoublyLinkedList<Block>();
         fBList.add(new Block(0, size));
@@ -67,7 +68,9 @@ public class MemPool
             // if a free block matches the exact size of the byte array (+ LEN),
             // it is inserted at that spot with the helped method
             if (fBList.get().getLen() == space.length + LEN)
+            {
                 return add(space);
+            }
 
             // if a free block is bigger than the size of the byte array
             // (+ LEN), then the absolute difference between the two and the
@@ -98,9 +101,11 @@ public class MemPool
             // reflect the change
             if (fBList.size() > 0
                 && fBList.get().getPos() + fBList.get().getLen() == pool.length)
+            {
                 fBList.get().set(
                     fBList.get().getPos(),
                     fBList.get().getLen() + initCapacity);
+            }
 
             // if there isn't a free block at the end of pool, then one is added
             // to the free-block list to reflect the expansion of the memory
@@ -109,7 +114,7 @@ public class MemPool
             {
                 fBList.append((trash.size() != 0)
                     ? trash.remove().get().set(pool.length, initCapacity)
-                    : new Block(pool.length,initCapacity));
+                    : new Block(pool.length, initCapacity));
                 fBList.next();
             }
 
@@ -125,7 +130,9 @@ public class MemPool
         {
             fBList.moveToFront();
             for (int j = 0; j < pos; j++)
+            {
                 fBList.next();
+            }
         }
         return add(space);
     }
@@ -150,7 +157,9 @@ public class MemPool
         // place the new free block is found
         for (pos = 0; pos < fBList.size() &&
             fBList.get().getPos() < h.get(); pos++)
+        {
             fBList.next();
+        }
 
         int len = ((pool[h.get()] << 8) + pool[h.get() + 1]) + LEN;
 
@@ -158,13 +167,17 @@ public class MemPool
         // position of the new free block (with respective length) and added to
         // the free block list
         if (pos != fBList.size())
+        {
             fBList.add((trash.size() != 0)
                 ? trash.remove().get().set(h.get(), len)
                 : new Block(h.get(), len));
+        }
         else
+        {
             fBList.append((trash.size() != 0)
                 ? trash.remove().get().set(h.get(), len)
                 : new Block(h.get(), len));
+        }
 
         // if the new free block is not at the beginning of the list, then it
         // can be checked for possible merging with the preceding free block
@@ -177,7 +190,9 @@ public class MemPool
         // if the new free block is not at the end of the list, then it
         // can be checked for possible merging with the following free block
         if (!fBList.isLast())
+        {
             merge();
+        }
     }
 
 
@@ -232,6 +247,11 @@ public class MemPool
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * @param space byte array to hold copied bytes
+     * @return the position of the byte array in the pool
+     */
     private int add(byte[] space)
     {
         int pos = fBList.get().getPos();
@@ -243,25 +263,35 @@ public class MemPool
 
         // the actual insertion of the byte array into the pool
         for (int j = 0; j < space.length; j++)
+        {
             pool[(pos + LEN) + j] = space[j];
+        }
 
         // if the size of the inserted byte array (+ LEN) is not a perfect fit
         // for the free block, then the block length is updated to reflect the
         // change
         if (fBList.get().getLen() != space.length + LEN)
+        {
             fBList.get().set(
                 fBList.get().getPos() + (space.length + LEN),
                 fBList.get().getLen() - (space.length + LEN));
+        }
 
         // the free block is removed if the size of the free block and the
         // size of the byte array (+ LEN) are the same
         else
+        {
             trash.add(fBList.remove().get());
+        }
 
         return pos;
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Merges two free-blocks.
+     */
     private void merge()
     {
         int end = fBList.get().getPos() + fBList.get().getLen();
